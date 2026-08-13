@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>Test API | ConnectPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-10 font-sans">
+
+    <div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-md">
+        <h2 class="text-xl font-bold mb-4">ทดสอบ API: Create Contact</h2>
+        
+        <!-- ปุ่มสำหรับกดเพื่อยิง API -->
+        <button id="btnTest" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            ยิงข้อมูลทดสอบ (POST)
+        </button>
+
+        <h3 class="font-semibold mt-6 mb-2">ผลลัพธ์จาก API:</h3>
+        <!-- กล่องสำหรับแสดงผล JSON ที่ตอบกลับมา -->
+        <pre id="resultBox" class="bg-gray-800 text-green-400 p-4 rounded-lg overflow-x-auto min-h-[100px] text-sm"></pre>
+    </div>
+
+    <script>
+        document.getElementById('btnTest').addEventListener('click', function() {
+            const resultBox = document.getElementById('resultBox');
+            resultBox.innerHTML = "กำลังส่งข้อมูล...";
+
+            // ข้อมูลจำลองที่จะส่งไปให้ API (แบบ JSON)
+            const payload = {
+                
+               id: 6,
+                first_name: "มานะ",
+                last_name: "มานี",
+                job_title: "Programmer",
+                department_id: 2,
+                extension: "8888",
+                ip_address: "192.168.1.100"
+            };
+
+            // ใช้ Fetch API เพื่อยิง POST Request
+            fetch('api/contacts/update.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // นำผลลัพธ์ JSON มาแสดงในกล่อง
+                resultBox.innerHTML = JSON.stringify(data, null, 4);
+            })
+            .catch(error => {
+                resultBox.innerHTML = "Error: " + error;
+            });
+        });
+    </script>
+</body>
+</html>
