@@ -9,7 +9,7 @@ require_once __DIR__ . '/../config/app.php';
 
 class Auth {
     
-    //    /**
+    /**
      * ตรวจสอบว่าผู้ใช้ Login เข้าระบบแล้วหรือยัง
      * @return bool true ถ้า Login แล้ว, false ถ้ายัง
      */
@@ -17,7 +17,7 @@ class Auth {
         return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
     }
 
-    //    /**
+    /**
      * บังคับว่าต้อง Login เท่านั้น (ใช้ดักหน้าเว็บ)
      * หากยังไม่ Login จะถูกเด้งกลับไปหน้าแรก (Login Page)
      */
@@ -28,7 +28,7 @@ class Auth {
         }
     }
 
-    //    /**
+    /**
      * ตรวจสอบว่าผู้ใช้ปัจจุบันมีสิทธิ์เป็น Admin หรือไม่
      * @return bool true ถ้าเป็น Admin, false ถ้าไม่ใช่
      */
@@ -36,7 +36,7 @@ class Auth {
         return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     }
 
-    //    /**
+    /**
      * บังคับว่าต้องเป็น Admin เท่านั้น (ใช้ดักหน้าตั้งค่า/Dashboard)
      * หากเป็นแค่ User ธรรมดา จะถูกเด้งไปหน้า Phone Directory ทันที
      */
@@ -51,7 +51,7 @@ class Auth {
         }
     }
 
-    //    /**
+    /**
      * ดึงข้อมูลพื้นฐานของคนที่กำลัง Login อยู่
      * @return array ข้อมูล User ปัจจุบัน
      */
