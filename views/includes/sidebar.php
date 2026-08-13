@@ -49,19 +49,19 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">จัดการข้อมูล</p>
         <ul class="space-y-1 mb-8">
             <li>
-                <a href="<?= BASE_URL ?>views/admin/directory.php" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= $currentPage === 'directory.php' ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' ?>">
-                    <i class="ph <?= $currentPage === 'directory.php' ? 'ph-address-book text-blue-600' : 'ph-address-book' ?> text-xl"></i>
+                <a href="<?= BASE_URL ?>views/admin/contacts_manage.php" 
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= $currentPage === 'contacts_manage.php' ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' ?>">
+                    <i class="ph <?= $currentPage === 'contacts_manage.php' ? 'ph-address-book text-blue-600' : 'ph-address-book' ?> text-xl"></i>
                     สมุดรายชื่อ (Directory)
                 </a>
             </li>
             
             <?php if ($isAdmin): ?>
             <li>
-                <a href="#" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-500 hover:bg-gray-50 hover:text-gray-900 opacity-60 cursor-not-allowed" title="เร็วๆ นี้">
-                    <i class="ph ph-buildings text-xl"></i>
-                    จัดการแผนก (Departments)
+                <a href="<?= BASE_URL ?>views/admin/user_management.php" 
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= $currentPage === 'user_management.php' ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' ?>">
+                    <i class="ph <?= $currentPage === 'user_management.php' ? 'ph-users text-blue-600' : 'ph-users' ?> text-xl"></i>
+                    จัดการผู้ใช้งาน (Users)
                 </a>
             </li>
             <?php endif; ?>

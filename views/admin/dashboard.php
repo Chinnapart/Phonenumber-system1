@@ -148,7 +148,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <p class="text-sm text-gray-500 mb-6 leading-relaxed">
                     เพิ่ม แก้ไข หรือลบข้อมูลเบอร์โทรศัพท์และ IP Address ของพนักงานในองค์กรได้ผ่านระบบจัดการ
                 </p>
-                <a href="<?= BASE_URL ?>views/admin/directory.php" class="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-medium px-6 py-2.5 rounded-xl shadow-lg shadow-brand-500/30 transition-all duration-200 hover:-translate-y-0.5">
+                <a href="<?= BASE_URL ?>views/admin/contacts_manage.php" class="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-medium px-6 py-2.5 rounded-xl shadow-lg shadow-brand-500/30 transition-all duration-200 hover:-translate-y-0.5">
                     เปิดสมุดรายชื่อ
                     <i class="ph ph-arrow-right font-bold"></i>
                 </a>
@@ -179,11 +179,3 @@ require_once __DIR__ . '/../includes/header.php';
 
 </body>
 </html>
-```
-
-**วิธีดูผลลัพธ์:**
-ให้นำโค้ดนี้ไปทับที่ไฟล์ `views/admin/dashboard.php` อันเดิมได้เลยครับ แล้วลองเข้าสู่ระบบ (Login) ด้วยบัญชี `admin` (รหัสผ่าน `password`)
-
-คุณจะได้เห็นหน้า Dashboard สุดหรูหรา ที่โหลดตัวเลขสถิติต่างๆ และวาดกราฟโดนัท (Donut Chart) ให้อัตโนมัติ พร้อมทั้งมีปุ่ม **"สแกนสถานะเครือข่าย (Ping All)"** ที่สามารถกดสั่งเช็คสถานะ IP พร้อมกันทั้งบริษัทได้ทันทีจากหน้านี้ครับ!
-
-**ก้าวสุดท้ายของโปรเจกต์นี้:** เราจะไปปั้นหน้าจัดการข้อมูลพนักงานของแอดมิน นั่นคือ **`views/admin/directory.php`** (ซึ่งจะมีปุ่มเพิ่ม/ลบ/แก้ไข และ Modal ต่างๆ ครบครัน) พร้อมลุยหน้าสุดท้ายเลยไหมครับ!
