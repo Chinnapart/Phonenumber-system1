@@ -1,0 +1,119 @@
+/* STREAMING_CHUNK:Importing Fonts and Base setup /
+/ ==========================================
+ConnectPro - Main Stylesheet
+Path: assets/css/main.css
+========================================== */
+
+/* นำเข้าฟอนต์ Inter (สำหรับภาษาอังกฤษและตัวเลข) และ Prompt (สำหรับภาษาไทย) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap');
+
+/* กำหนดตัวแปรสีหลักของแบรนด์ (เผื่อนำไปใช้กับ Custom CSS ส่วนอื่น) */
+:root {
+--brand-50: #eff6ff;
+--brand-100: #dbeafe;
+--brand-500: #3b82f6;
+--brand-600: #2563eb;
+--brand-700: #1d4ed8;
+--brand-900: #1e3a8a;
+}
+
+body {
+/* ใช้ฟอนต์หลักของระบบ /
+font-family: 'Inter', 'Prompt', sans-serif;
+/ ทำให้ตัวหนังสือคมชัดขึ้นบนหน้าจอความละเอียดสูง /
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+/ สีพื้นหลังเริ่มต้น (สีเทาอ่อน สบายตา) */
+background-color: #f8fafc;
+}
+
+/* STREAMING_CHUNK:Styling Custom Scrollbars /
+/ ==========================================
+Custom Scrollbar (เพิ่มความหรูหราให้ Dashboard)
+========================================== */
+::-webkit-scrollbar {
+width: 6px;
+height: 6px;
+}
+
+::-webkit-scrollbar-track {
+background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+background: #cbd5e1; /* สีเทาอ่อน */
+border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+background: #94a3b8; /* เข้มขึ้นเมื่อเอาเมาส์ชี้ */
+}
+
+/* STREAMING_CHUNK:Defining Custom Reusable Components /
+/ ==========================================
+Custom UI Components
+========================================== */
+
+/* 1. Glassmorphism Panel (เอฟเฟกต์กระจกใส)
+ใช้กับ Card หรือ Sidebar ที่อยากให้ดูทันสมัย */
+.glass-panel {
+background: rgba(255, 255, 255, 0.7);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.5);
+box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+/* 2. Gradient Text (ข้อความสีไล่ระดับ)
+ใช้กับ Heading หรือ โลโก้ */
+.text-gradient {
+background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-image: linear-gradient(135deg, #2563eb 0%, #8b5cf6 100%);
+}
+
+/* 3. Status Indicator Dot (จุดแสดงสถานะ Online/Offline) */
+.status-dot {
+height: 8px;
+width: 8px;
+border-radius: 50%;
+display: inline-block;
+transition: all 0.3s ease;
+}
+
+.status-dot.online {
+background-color: #22c55e;
+box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+.status-dot.offline {
+background-color: #ef4444;
+box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.status-dot.unknown {
+background-color: #94a3b8;
+box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.2);
+}
+
+/* STREAMING_CHUNK:Adding Global Animations /
+/ ==========================================
+Animations
+========================================== */
+
+/* แอนิเมชัน Fade-in เวลามีข้อมูลโหลดขึ้นมาใหม่ (เช่น โหลดตารางเสร็จ) */
+.animate-fade-in {
+animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+from {
+opacity: 0;
+transform: translateY(10px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}

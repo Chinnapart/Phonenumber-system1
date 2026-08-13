@@ -1,0 +1,138 @@
+/* ==========================================
+ConnectPro - Components Stylesheet
+Path: assets/css/components.css
+Description: Custom styles for Modals, Tables, Badges, and Notifications
+========================================== */
+
+/* ==========================================
+
+Table Styles (ตารางข้อมูล)
+========================================== /
+/ กำหนดให้ตารางมี Scrollbar ซ้ายขวาถ้าหน้าจอเล็ก และเลื่อนสมูทบนมือถือ /
+.table-container {
+overflow-x: auto;
+-webkit-overflow-scrolling: touch; / เพิ่มความลื่นไหลเวลารูดบนหน้าจอสัมผัส /
+border-radius: 0.75rem; / rounded-xl */
+box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.custom-table {
+width: 100%;
+border-collapse: separate;
+border-spacing: 0;
+}
+
+.custom-table th {
+position: sticky;
+top: 0;
+background-color: #f8fafc; /* bg-slate-50 /
+z-index: 10;
+text-transform: uppercase;
+font-size: 0.75rem;
+font-weight: 600;
+letter-spacing: 0.05em;
+color: #64748b; / text-slate-500 /
+padding: 1rem 1.5rem;
+border-bottom: 1px solid #e2e8f0;
+/ เพิ่มเงาบางๆ ให้หัวตารางดูมีมิติเวลาเลื่อนข้อมูลลงไปข้างใต้ */
+box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.custom-table td {
+padding: 1rem 1.5rem;
+vertical-align: middle;
+border-bottom: 1px solid #f1f5f9;
+color: #334155;
+font-size: 0.875rem;
+}
+
+/* เอฟเฟกต์ตอนเอาเมาส์ชี้แถวในตาราง /
+.custom-table tbody tr {
+transition: background-color 0.2s ease-in-out; / ใช้แค่การเปลี่ยนสี ลดอาการสั่นของ UI */
+background-color: #ffffff;
+}
+
+.custom-table tbody tr:hover {
+background-color: #f8fafc;
+}
+
+/* ==========================================
+2. Modal & Dialog (ป๊อปอัป)
+========================================== /
+/ พื้นหลังสีดำโปร่งแสงตอนเปิด Modal /
+.modal-backdrop {
+background: rgba(15, 23, 42, 0.5); / สีน้ำเงินเข้มโปร่งแสง */
+backdrop-filter: blur(4px);
+-webkit-backdrop-filter: blur(4px);
+transition: opacity 0.3s ease;
+}
+
+/* แอนิเมชันให้ Modal ค่อยๆ เด้งขึ้นมาและขยายตัว */
+.modal-content {
+animation: modalScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalScaleIn {
+0% {
+opacity: 0;
+transform: scale(0.95) translateY(20px);
+}
+100% {
+opacity: 1;
+transform: scale(1) translateY(0);
+}
+}
+
+/* ==========================================
+3. Notifications & Toasts (การแจ้งเตือนมุมจอ)
+========================================== /
+/ แอนิเมชันสไลด์เข้าจากด้านขวา */
+.toast-slide-in {
+animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* แอนิเมชันสไลด์ออกไปด้านขวา (ตอนปิด) */
+.toast-slide-out {
+animation: slideOutRight 0.3s ease-in forwards;
+}
+
+@keyframes slideInRight {
+0% { transform: translateX(120%); opacity: 0; }
+100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+0% { transform: translateX(0); opacity: 1; }
+100% { transform: translateX(120%); opacity: 0; }
+}
+
+/* ==========================================
+4. Loading Spinners (สถานะกำลังโหลด)
+========================================== /
+.spinner-ring {
+border: 3px solid rgba(0, 0, 0, 0.1); / กำหนดความโปร่งใสกลางๆ /
+border-top-color: currentColor; / สีหมุนจะเปลี่ยนอัตโนมัติตามสีของข้อความใน Element พ่อแม่ */
+border-radius: 50%;
+width: 24px;
+height: 24px;
+animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+/* ==========================================
+5. Accessibility (การเข้าถึง)
+========================================== /
+/ สำหรับผู้ใช้ที่มีอาการเวียนหัวหรือตั้งค่าลดแอนิเมชันในเครื่องไว้ ระบบจะปิดแอนิเมชันให้อัตโนมัติ */
+@media (prefers-reduced-motion: reduce) {
+.modal-content,
+.toast-slide-in,
+.toast-slide-out,
+.spinner-ring {
+animation: none !important;
+transition: none !important;
+}
+}
