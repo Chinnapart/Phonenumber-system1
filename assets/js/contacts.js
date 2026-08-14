@@ -105,8 +105,9 @@ async function loadContacts() {
  * ฟังก์ชันนำข้อมูล JSON มาสร้างเป็น HTML Table Rows
  */
 function renderTable(contacts) {
+    const els = getElements(); // แก้ไขดึงค่า elements มาใช้
     if (contacts.length === 0) {
-        elements.tableBody.innerHTML = `
+        els.tableBody.innerHTML = `
             <tr>
                 <td colspan="7" class="text-center py-8 text-gray-400">
                     <i class="ph ph-folder-open text-4xl mb-2"></i><br>
@@ -145,8 +146,6 @@ function renderTable(contacts) {
             ? `<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background-color: ${deptColor}"></span>${contact.department_name}</div>`
             : '<span class="text-gray-400">-</span>';
 
-        // สร้างแถว (HTML)
-        // สังเกตว่าเราแนบ data-id ไว้ที่ปุ่ม เพื่อใช้ทำ Event Delegation ต่อไป
         html += `
             <tr class="hover:bg-slate-50 transition-colors group">
                 <td class="font-medium text-gray-900">
@@ -165,7 +164,6 @@ function renderTable(contacts) {
                 <td class="font-mono text-blue-600" id="ip-cell-${contact.id}">${contact.ip_address || '-'}</td>
                 <td id="status-cell-${contact.id}">${statusBadge}</td>
                 <td>
-                    <!-- ปุ่ม Action ต่างๆ -->
                     <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button onclick="pingSingleIp(${contact.id}, '${contact.ip_address}')" class="p-1.5 text-blue-500 hover:bg-blue-50 rounded-lg tooltip" title="ตรวจสอบสถานะ (Ping)">
                             <i class="ph ph-broadcast text-lg"></i>
@@ -182,21 +180,22 @@ function renderTable(contacts) {
         `;
     });
 
-    elements.tableBody.innerHTML = html;
+    els.tableBody.innerHTML = html;
 }
 
 /**
  * ฟังก์ชันจัดการปุ่มเปลี่ยนหน้า (Pagination)
  */
 function renderPagination(pageData) {
-    if (!elements.paginationContainer) return;
+    const els = getElements(); // แก้ไขดึงค่า elements มาใช้
+    if (!els.paginationContainer) return;
 
     const totalPages = pageData.total_pages;
     const curr = pageData.current_page;
     
     // อัปเดตข้อความบอกจำนวน
-    if (elements.pageInfo) {
-        elements.pageInfo.innerText = `หน้า ${curr} จาก ${totalPages} (รวม ${pageData.total_records} รายการ)`;
+    if (els.pageInfo) {
+        els.pageInfo.innerText = `หน้า ${curr} จาก ${totalPages} (รวม ${pageData.total_records} รายการ)`;
     }
 
     let html = '';
@@ -223,7 +222,7 @@ function renderPagination(pageData) {
                 <i class="ph ph-caret-right"></i>
              </button>`;
 
-    elements.paginationContainer.innerHTML = html;
+    els.paginationContainer.innerHTML = html;
 }
 
 // ฟังก์ชันถูกเรียกเมื่อกดเปลี่ยนหน้า
@@ -259,7 +258,7 @@ async function handleContactSubmit(e) {
         
         if (response.status === 'success') {
             showToast(response.message, 'success');
-            closeModal(elements.contactModal);
+            closeModal('contactModal'); // แก้ไขลบการเรียก elements ผิดพลาด
             form.reset();
             // รีโหลดตาราง
             loadContacts();
@@ -317,26 +316,10 @@ window.openCreateModal = function() {
     openModal(els.contactModal);
 }
 
-// ฟังก์ชันเปิด Modal สำหรับเพิ่มใหม่ (เคลียร์ค่าเก่าทิ้ง)
-window.openCreateModal = function() {
-    if(elements.contactForm) {
-        elements.contactForm.reset();
-        document.getElementById('form_id').value = ''; // เคลียร์ ID
-    }
-    const modalTitle = document.getElementById('modalTitle');
-    if (modalTitle) modalTitle.innerText = 'เพิ่มผู้ติดต่อใหม่';
-    
-    openModal(elements.contactModal);
-}
-
 /**
  * ฟังก์ชันลบข้อมูลผู้ติดต่อ
  */
 window.deleteContact = async function(id) {
-    // ใน Vanilla JS ถ้าไม่อยากใช้ confirm() ที่ดูไม่สวย เราอาจจะใช้ Modal ซ้อนได้ 
-    // แต่เพื่อความรวดเร็วและใช้ตามข้อจำกัด (ไม่ใช้ confirm) ผมจะทำ Custom Confirm Toast
-    // * หมายเหตุ: ตามกฎห้ามใช้ confirm() เด็ดขาด ผมจึงดัดแปลงเป็นการลบทันทีพร้อมแสดง Toast แจ้ง หรือสร้าง Custom Modal แทน
-    
     // สร้าง HTML สำหรับ Custom Confirm Modal (ทำแบบฉีดโค้ดเข้าไปเลย)
     const confirmHtml = `
         <div id="deleteConfirmModal" class="fixed inset-0 z-50 flex items-center justify-center">
