@@ -216,11 +216,42 @@ require_once __DIR__ . '/../includes/header.php';
                     <span class="text-xs font-semibold text-slate-600">Offline</span>
                 </div>
             </div>
+        
         </div>
 
         <!-- พื้นที่วาดกราฟ -->
         <div class="relative w-full h-80 z-10">
             <canvas id="networkTrendChart"></canvas>
+        </div>
+    </div>
+
+    <!-- 🌟 Monthly Network Trend Chart (Luxurious Area Chart) -->
+    <div class="mt-6 bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 lg:p-8 relative overflow-hidden group">
+        <!-- Glow Effects (แสงเรืองแสงสีม่วง/น้ำเงิน) -->
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 relative z-10">
+            <div>
+                <h3 class="text-xl font-bold text-gray-900 tracking-tight">สรุปสถานะการเชื่อมต่อรายเดือน (ปีปัจจุบัน)</h3>
+                <p class="text-sm text-gray-500 mt-1">ภาพรวมแนวโน้มอุปกรณ์ <span class="text-indigo-500 font-semibold">ออนไลน์</span> และ <span class="text-rose-500 font-semibold">ออฟไลน์</span> ตลอดทั้งปี</p>
+            </div>
+            <!-- Custom Legend -->
+            <div class="mt-4 sm:mt-0 flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-100 shadow-sm">
+                <div class="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm">
+                    <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)] animate-pulse"></span>
+                    <span class="text-xs font-semibold text-slate-700">Online (Avg)</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span>
+                    <span class="text-xs font-semibold text-slate-600">Offline (Avg)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- พื้นที่วาดกราฟรายเดือน -->
+        <div class="relative w-full h-80 z-10">
+            <canvas id="monthlyTrendChart"></canvas>
         </div>
     </div>
 
@@ -380,6 +411,116 @@ require_once __DIR__ . '/../includes/header.php';
                 plugins: [alwaysShowDataLabels] // เรียกใช้งาน Plugin ที่เราเขียนไว้
             });
         });
+    
+    
+    // ========================================================
+            // 🌟 กราฟรายเดือน (Monthly Trend Bar Chart)
+            // ========================================================
+            const ctxMonthly = document.getElementById('monthlyTrendChart');
+            if (ctxMonthly) {
+                const ctxM = ctxMonthly.getContext('2d');
+
+                // 🎨 Gradient สำหรับกราฟรายเดือน (โทน Indigo หรูหรา)
+                const gradientOnlineM = ctxM.createLinearGradient(0, 0, 0, 300);
+                gradientOnlineM.addColorStop(0, 'rgba(99, 102, 241, 1)'); // Indigo สด
+                gradientOnlineM.addColorStop(1, 'rgba(99, 102, 241, 0.2)');
+
+                const gradientOfflineM = ctxM.createLinearGradient(0, 0, 0, 300);
+                gradientOfflineM.addColorStop(0, 'rgba(244, 63, 94, 1)'); // Rose สด
+                gradientOfflineM.addColorStop(1, 'rgba(244, 63, 94, 0.2)');
+
+                // 💡 ข้อมูลจำลอง 12 เดือน (Mock Data)
+                const monthsLabel = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+                const monthlyOnlineData = [45, 52, 48, 60, 65, 58, 70, 75, 72, 80, 85, 90];
+                const monthlyOfflineData = [12, 10, 15, 8, 5, 9, 4, 3, 5, 2, 4, 1];
+
+                // 🌟 Custom Plugin สำหรับโชว์ตัวเลขบนแท่งกราฟรายเดือน
+                const alwaysShowDataLabelsMonthly = {
+                    id: 'alwaysShowDataLabelsMonthly',
+                    afterDatasetsDraw(chart, args, pluginOptions) {
+                        const { ctx } = chart;
+                        ctx.font = "bold 12px 'Inter', 'Prompt', sans-serif"; // ปรับขนาดฟอนต์ให้เล็กลงนิดนึงเพราะมี 12 แท่ง
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'bottom';
+
+                        chart.data.datasets.forEach((dataset, i) => {
+                            const meta = chart.getDatasetMeta(i);
+                            meta.data.forEach((bar, index) => {
+                                const data = dataset.data[index];
+                                if (data > 0) { // ซ่อนเลข 0
+                                    ctx.fillStyle = i === 0 ? '#6366f1' : '#f43f5e'; // สี Indigo สำหรับ Online, สี Rose สำหรับ Offline
+                                    ctx.fillText(data, bar.x, bar.y - 6);
+                                }
+                            });
+                        });
+                    }
+                };
+
+                new Chart(ctxM, {
+                    type: 'bar', // เปลี่ยนเป็นกราฟแท่ง
+                    data: {
+                        labels: monthsLabel,
+                        datasets: [
+                            {
+                                label: 'ออนไลน์เฉลี่ย (Online)',
+                                data: monthlyOnlineData,
+                                backgroundColor: gradientOnlineM,
+                                borderRadius: 4, // ขอบมน
+                                borderSkipped: false,
+                                barPercentage: 0.7,
+                                categoryPercentage: 0.8
+                            },
+                            {
+                                label: 'ออฟไลน์เฉลี่ย (Offline)',
+                                data: monthlyOfflineData,
+                                backgroundColor: gradientOfflineM,
+                                borderRadius: 4,
+                                borderSkipped: false,
+                                barPercentage: 0.7,
+                                categoryPercentage: 0.8
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                top: 25 // เพิ่มระยะด้านบนไม่ให้ตัวเลขถูกตัด
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                                titleFont: { family: "'Inter', 'Prompt', sans-serif", size: 13 },
+                                bodyFont: { family: "'Inter', 'Prompt', sans-serif", size: 14, weight: 'bold' },
+                                padding: 12,
+                                cornerRadius: 8,
+                                displayColors: true,
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false, drawBorder: false },
+                                ticks: { font: { family: "'Inter', 'Prompt', sans-serif", size: 11 }, color: '#64748b' }
+                            },
+                            y: {
+                                grid: { color: '#f1f5f9', borderDash: [5, 5], drawBorder: false },
+                                ticks: {
+                                    display: false, // ซ่อนตัวเลขแกน Y ด้านซ้าย
+                                    beginAtZero: true,
+                                    suggestedMax: 110 // เผื่อระยะด้านบนไว้ให้ตัวเลข 90 ไม่ชนขอบ
+                                }
+                            }
+                        }
+                    },
+                    plugins: [alwaysShowDataLabelsMonthly] // เรียกใช้ Plugin แสดงตัวเลข
+                });
+            }
+    
     </script>
 
 </body>
