@@ -31,6 +31,11 @@ try {
     // ป้องกันการหารด้วย 0
     $onlinePercentage = ($totalContacts > 0) ? round(($onlineContacts / $totalContacts) * 100, 1) : 0;
 
+// หาจำนวน Contacts ที่ Offline และคำนวณเปอร์เซ็นต์
+    $stmtOffline = $pdo->query("SELECT COUNT(id) FROM contacts WHERE status = 'offline'");
+    $offlineContacts = (int) $stmtOffline->fetchColumn();
+    $offlinePercentage = ($totalContacts > 0) ? round(($offlineContacts / $totalContacts) * 100, 1) : 0;
+
     // 3. หาจำนวนแผนกทั้งหมด
     $stmtDept = $pdo->query("SELECT COUNT(id) FROM departments");
     $totalDepartments = (int) $stmtDept->fetchColumn();
@@ -72,6 +77,8 @@ try {
                 'new_this_month' => $newThisMonth,
                 'online_active' => $onlineContacts,
                 'online_percentage' => $onlinePercentage,
+                'offline_active' => $offlineContacts,           // <-- เพิ่มบรรทัดนี้
+                'offline_percentage' => $offlinePercentage,     // <-- เพิ่มบรรทัดนี้
                 'total_departments' => $totalDepartments,
                 'recently_updated' => $updatedToday
             ],

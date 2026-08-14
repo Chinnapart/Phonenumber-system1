@@ -50,7 +50,7 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 
     <!-- KPI Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
         
         <!-- Card 1: Total Contacts -->
         <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-colors">
@@ -90,6 +90,27 @@ require_once __DIR__ . '/../includes/header.php';
                 </div>
             </div>
             <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-gradient-to-br from-emerald-50 to-transparent rounded-full opacity-50 pointer-events-none"></div>
+        </div>
+
+<!-- Card 3: Offline Status (เพิ่มใหม่) -->
+        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm relative overflow-hidden group hover:border-rose-200 transition-colors">
+            <div class="flex items-start justify-between relative z-10">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 mb-1">ออฟไลน์ (Offline)</p>
+                    <div class="flex items-baseline gap-2">
+                        <h3 class="text-3xl font-bold text-gray-900" id="kpiOfflineActive">-</h3>
+                        <span class="text-sm font-semibold text-rose-500" id="kpiOfflinePercent">-%</span>
+                    </div>
+                    <div class="mt-2 flex items-center text-xs text-gray-400 font-medium">
+                        <span class="status-dot offline mr-1.5 w-2 h-2"></span>
+                        ขาดการเชื่อมต่อ
+                    </div>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="ph ph-wifi-slash text-2xl"></i>
+                </div>
+            </div>
+            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-gradient-to-br from-rose-50 to-transparent rounded-full opacity-50 pointer-events-none"></div>
         </div>
 
         <!-- Card 3: Departments -->

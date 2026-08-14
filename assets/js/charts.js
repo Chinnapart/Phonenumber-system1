@@ -52,13 +52,19 @@ function updateKpiCards(kpi) {
         if (el) el.innerText = text;
     };
 
-    // ใส่ข้อมูลลงไปใน Element 
+    // ใส่ข้อมูลลงไปใน Element ทั่วไป
     setElementText('kpiTotalContacts', kpi.total_contacts);
     setElementText('kpiNewThisMonth', `+${kpi.new_this_month} เดือนนี้`);
     
+    // ใส่ข้อมูล Online
     setElementText('kpiOnlineActive', kpi.online_active);
     setElementText('kpiOnlinePercent', `${kpi.online_percentage}%`);
     
+    // ใส่ข้อมูล Offline (ที่เราเพิ่งเพิ่มไป)
+    setElementText('kpiOfflineActive', kpi.offline_active);
+    setElementText('kpiOfflinePercent', `${kpi.offline_percentage}%`);
+    
+    // ใส่ข้อมูลแผนกและการอัปเดต
     setElementText('kpiTotalDepartments', kpi.total_departments);
     setElementText('kpiRecentlyUpdated', `อัปเดตวันนี้ ${kpi.recently_updated} รายการ`);
 }
