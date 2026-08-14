@@ -194,6 +194,36 @@ require_once __DIR__ . '/../includes/header.php';
         
     </div>
 
+<!-- 🌟 Network Trend Chart (Luxurious Design) -->
+    <div class="mt-8 bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 lg:p-8 relative overflow-hidden group">
+        <!-- Glow Effects (แสงเรืองแสงพื้นหลัง) -->
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-rose-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 relative z-10">
+            <div>
+                <h3 class="text-xl font-bold text-gray-900 tracking-tight">สรุปสถานะการเชื่อมต่อย้อนหลัง (7 วัน)</h3>
+                <p class="text-sm text-gray-500 mt-1">แนวโน้มอุปกรณ์ <span class="text-emerald-500 font-semibold">ออนไลน์</span> และ <span class="text-rose-500 font-semibold">ออฟไลน์</span> ในแต่ละวัน</p>
+            </div>
+            <!-- Custom Legend -->
+            <div class="mt-4 sm:mt-0 flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-100 shadow-sm">
+                <div class="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] animate-pulse"></span>
+                    <span class="text-xs font-semibold text-slate-700">Online</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span>
+                    <span class="text-xs font-semibold text-slate-600">Offline</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- พื้นที่วาดกราฟ -->
+        <div class="relative w-full h-80 z-10">
+            <canvas id="networkTrendChart"></canvas>
+        </div>
+    </div>
+
 </div>
 
 <?php
@@ -241,6 +271,114 @@ require_once __DIR__ . '/../includes/header.php';
             // เรียกใช้งานครั้งแรกทันที และตั้งเวลาให้ทำงานทุกๆ 1 วินาที
             updateLiveClock();
             setInterval(updateLiveClock, 1000);
+        });
+    </script>
+
+<!-- Script สำหรับวาดกราฟ Trend (Luxurious Bar Chart) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctxTrend = document.getElementById('networkTrendChart');
+            if (!ctxTrend) return;
+
+            const ctx = ctxTrend.getContext('2d');
+
+            // 🎨 สร้าง Gradient ไล่สีแบบหรูหราสำหรับแท่งกราฟ
+            const gradientOnline = ctx.createLinearGradient(0, 0, 0, 300);
+            gradientOnline.addColorStop(0, 'rgba(16, 185, 129, 1)'); // Emerald (สีสดด้านบน)
+            gradientOnline.addColorStop(1, 'rgba(16, 185, 129, 0.2)'); // อ่อนลงด้านล่าง
+
+            const gradientOffline = ctx.createLinearGradient(0, 0, 0, 300);
+            gradientOffline.addColorStop(0, 'rgba(244, 63, 94, 1)'); // Rose (สีสดด้านบน)
+            gradientOffline.addColorStop(1, 'rgba(244, 63, 94, 0.2)'); // อ่อนลงด้านล่าง
+
+            // 💡 ข้อมูลจำลอง (Mock Data)
+            const daysLabel = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
+            const onlineData = [8, 9, 10, 9, 11, 10, 11];
+            const offlineData = [3, 2, 1, 2, 0, 1, 0];
+
+            // 🌟 Custom Plugin สำหรับวาดตัวเลขบนแท่งกราฟโดยไม่ต้อง Hover
+            const alwaysShowDataLabels = {
+                id: 'alwaysShowDataLabels',
+                afterDatasetsDraw(chart, args, pluginOptions) {
+                    const { ctx } = chart;
+                    ctx.font = "bold 14px 'Inter', 'Prompt', sans-serif";
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+
+                    chart.data.datasets.forEach((dataset, i) => {
+                        const meta = chart.getDatasetMeta(i);
+                        meta.data.forEach((bar, index) => {
+                            const data = dataset.data[index];
+                            if (data > 0) { // ซ่อนเลข 0 เพื่อให้กราฟดูคลีน
+                                ctx.fillStyle = i === 0 ? '#10b981' : '#f43f5e'; // สีตัวเลขตามสถานะ
+                                ctx.fillText(data, bar.x, bar.y - 6); // วาดตัวเลขเหนือแท่งกราฟ
+                            }
+                        });
+                    });
+                }
+            };
+
+            new Chart(ctx, {
+                type: 'bar', // เปลี่ยนเป็น Bar Chart
+                data: {
+                    labels: daysLabel,
+                    datasets: [
+                        {
+                            label: 'ออนไลน์ (Online)',
+                            data: onlineData,
+                            backgroundColor: gradientOnline,
+                            borderRadius: 6, // ขอบมนสวยงาม
+                            borderSkipped: false, // ให้ขอบมนทั้งด้านบนและล่าง
+                            barPercentage: 0.6, // ขนาดความกว้างของแท่ง
+                            categoryPercentage: 0.8
+                        },
+                        {
+                            label: 'ออฟไลน์ (Offline)',
+                            data: offlineData,
+                            backgroundColor: gradientOffline,
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            barPercentage: 0.6,
+                            categoryPercentage: 0.8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            top: 25 // เพิ่มพื้นที่ด้านบนเล็กน้อย ป้องกันตัวเลขถูกตัดขอบ
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { family: "'Inter', 'Prompt', sans-serif", size: 13 },
+                            bodyFont: { family: "'Inter', 'Prompt', sans-serif", size: 14, weight: 'bold' },
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: true,
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false, drawBorder: false }, // ซ่อนเส้นตารางแนวตั้ง
+                            ticks: { font: { family: "'Inter', 'Prompt', sans-serif" }, color: '#64748b' }
+                        },
+                        y: {
+                            grid: { color: '#f1f5f9', borderDash: [5, 5], drawBorder: false },
+                            ticks: {
+                                display: false, // ซ่อนตัวเลขแกน Y ด้านซ้าย เพราะเราโชว์บนแท่งกราฟแล้ว
+                                beginAtZero: true,
+                                suggestedMax: 15 // เพิ่มระยะความสูงเผื่อไว้ไม่ให้กราฟชนขอบบนสุด
+                            }
+                        }
+                    }
+                },
+                plugins: [alwaysShowDataLabels] // เรียกใช้งาน Plugin ที่เราเขียนไว้
+            });
         });
     </script>
 
