@@ -26,6 +26,22 @@ require_once __DIR__ . '/../includes/header.php';
             <p class="text-sm text-gray-500 mt-1">สรุปข้อมูลสถิติของสมุดรายชื่อและสถานะเครือข่าย</p>
         </div>
         <div class="flex items-center gap-3">
+             
+        <!-- Live Clock Widget (เพิ่มใหม่) -->
+            <div class="hidden lg:flex items-center bg-white/60 backdrop-blur-lg border border-gray-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl p-1.5 pr-5 transition-all hover:bg-white/80">
+                <div class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-brand-500 to-indigo-600 text-white rounded-xl mr-3 shadow-inner">
+                    <i class="ph ph-clock text-xl"></i>
+                </div>
+                <div class="flex flex-col justify-center mt-0.5">
+                    <div class="flex items-baseline gap-1">
+                        <!-- ใช้ font-mono เพื่อให้ตัวเลขมีความกว้างเท่ากัน ป้องกัน UI สั่น -->
+                        <span id="liveTime" class="text-lg font-bold text-slate-800 tracking-tight leading-none font-mono">--:--:--</span>
+                        <span class="text-xs font-bold text-brand-600 leading-none">น.</span>
+                    </div>
+                    <span id="liveDate" class="text-[0.65rem] font-medium text-slate-500 uppercase tracking-wider mt-1">กำลังโหลด...</span>
+                </div>
+            </div>
+
             <button onclick="runBatchPing(this)" class="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium px-4 py-2.5 rounded-xl shadow-sm transition-all duration-200">
                 <i class="ph ph-radar text-lg text-emerald-400"></i>
                 สแกนสถานะเครือข่าย (Ping All)
@@ -176,6 +192,36 @@ require_once __DIR__ . '/../includes/header.php';
 
     <!-- นำเข้าไฟล์ charts.js สำหรับวาดกราฟ และจัดการตัวเลข Dashboard -->
     <script src="<?= BASE_URL ?>assets/js/charts.js"></script>
+
+    <!-- Script สำหรับ Live Clock (เพิ่มใหม่) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timeEl = document.getElementById('liveTime');
+            const dateEl = document.getElementById('liveDate');
+            
+            if (!timeEl || !dateEl) return;
+
+            function updateLiveClock() {
+                const now = new Date();
+                
+                // จัดการเวลา (HH:mm:ss)
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                
+                // สร้างแอนิเมชัน Pulse ให้เครื่องหมาย Colon (:)
+                timeEl.innerHTML = `${hours}<span class="opacity-40 animate-pulse">:</span>${minutes}<span class="opacity-40 animate-pulse">:</span>${seconds}`;
+                
+                // จัดการวันที่ (วัน...ที่...เดือน...ปี)
+                const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+                dateEl.textContent = now.toLocaleDateString('th-TH', options);
+            }
+
+            // เรียกใช้งานครั้งแรกทันที และตั้งเวลาให้ทำงานทุกๆ 1 วินาที
+            updateLiveClock();
+            setInterval(updateLiveClock, 1000);
+        });
+    </script>
 
 </body>
 </html>

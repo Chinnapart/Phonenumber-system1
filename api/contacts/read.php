@@ -38,21 +38,38 @@ try {
             LEFT JOIN departments d ON c.department_id = d.id
             WHERE 1=1"; // 1=1 เป็นเทคนิคช่วยให้ต่อคำสั่ง AND ได้ง่ายขึ้น
     
-    $countSql = "SELECT COUNT(c.id) as total FROM contacts c WHERE 1=1";
+    // [แก้ไขบั๊กตรงนี้] เพิ่ม LEFT JOIN เข้าไปใน $countSql ด้วย เพื่อให้รู้จัก d.name ตอนค้นหา
+    $countSql = "SELECT COUNT(c.id) as total 
+                 FROM contacts c 
+                 LEFT JOIN departments d ON c.department_id = d.id 
+                 WHERE 1=1";
     
     $params = []; // Array สำหรับเก็บค่าที่จะ Bind
 
     // 6. เพิ่มเงื่อนไขการค้นหา (ถ้ามีการพิมพ์คำค้นหามา)
     if ($search !== '') {
-        $sql .= " AND (c.first_name LIKE :search 
-                       OR c.last_name LIKE :search 
-                       OR c.extension LIKE :search 
-                       OR c.ip_address LIKE :search)";
-        $countSql .= " AND (c.first_name LIKE :search 
-                            OR c.last_name LIKE :search 
-                            OR c.extension LIKE :search 
-                            OR c.ip_address LIKE :search)";
-        $params[':search'] = "%{$search}%";
+        $searchCond = " AND (c.id = :search_id
+                       OR c.first_name LIKE :search_fn 
+                       OR c.last_name LIKE :search_ln 
+                       OR CONCAT(c.first_name, ' ', c.last_name) LIKE :search_fullname
+                       OR c.job_title LIKE :search_jt
+                       OR c.extension LIKE :search_ext 
+                       OR c.mobile_number LIKE :search_mob
+                       OR c.ip_address LIKE :search_ip
+                       OR d.name LIKE :search_dept)";
+        
+        $sql .= $searchCond;
+        $countSql .= $searchCond;
+
+        $params[':search_id']       = $search;
+        $params[':search_fn']       = "%{$search}%";
+        $params[':search_ln']       = "%{$search}%";
+        $params[':search_fullname'] = "%{$search}%";
+        $params[':search_jt']       = "%{$search}%";
+        $params[':search_ext']      = "%{$search}%";
+        $params[':search_mob']      = "%{$search}%";
+        $params[':search_ip']       = "%{$search}%";
+        $params[':search_dept']     = "%{$search}%";
     }
 
     // 7. เพิ่มเงื่อนไขการกรองตามแผนก (Dropdown)

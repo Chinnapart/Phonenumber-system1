@@ -8,42 +8,45 @@ Description: Handle CRUD operations, Table rendering, and Network Pinging
 let currentPage = 1;
 const limit = 10; // จำนวนรายการต่อหน้า
 
-// เก็บค่าอ้างอิง DOM Elements ไว้ในตัวแปรเพื่อลดการ Query ซ้ำๆ
-const elements = {
-    tableBody: document.getElementById('contactsTableBody'),
-    searchInput: document.getElementById('searchInput'),
-    deptFilter: document.getElementById('deptFilter'),
-    statusFilter: document.getElementById('statusFilter'),
-    paginationContainer: document.getElementById('paginationContainer'),
-    pageInfo: document.getElementById('pageInfo'),
-    contactForm: document.getElementById('contactForm'),
-    contactModal: 'contactModal' // ID ของ Modal (อ้างอิงสำหรับ app.js)
-};
+// ฟังก์ชันดึง DOM Elements แบบ Dynamic เพื่อให้แน่ใจว่าอ้างอิง Element ถูกต้องเสมอ
+function getElements() {
+    return {
+        tableBody: document.getElementById('contactsTableBody'),
+        searchInput: document.getElementById('searchInput'),
+        deptFilter: document.getElementById('deptFilter'),
+        statusFilter: document.getElementById('statusFilter'),
+        paginationContainer: document.getElementById('paginationContainer'),
+        pageInfo: document.getElementById('pageInfo'),
+        contactForm: document.getElementById('contactForm'),
+        contactModal: 'contactModal'
+    };
+}
 
-// เมื่อหน้าเว็บโหลดเสร็จ ให้เริ่มดึงข้อมูลทันที
+// เมื่อหน้าเว็บโหลดเสร็จ ให้เริ่มดึงข้อมูลและผูก Event Listeners ทันที
 document.addEventListener('DOMContentLoaded', () => {
+    const els = getElements();
+
     // 1. โหลดข้อมูลรายชื่อครั้งแรก
     loadContacts();
 
-    // 2. ผูก Event Listener ให้ช่องค้นหาและตัวกรอง (เมื่อพิมพ์หรือเปลี่ยนค่า ให้โหลดข้อมูลใหม่)
-    if (elements.searchInput) {
-        // ใช้เทคนิค Debounce หน่วงเวลาพิมพ์เล็กน้อย เพื่อไม่ให้ยิง API ถี่เกินไป
+    // 2. ผูก Event Listener ให้ช่องค้นหาและตัวกรอง
+    if (els.searchInput) {
         let timeout = null;
-        elements.searchInput.addEventListener('input', () => {
+        els.searchInput.addEventListener('input', () => {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
                 currentPage = 1; // กลับไปหน้าแรกเสมอเมื่อค้นหา
                 loadContacts();
-            }, 500);
+            }, 300);
         });
     }
 
-    if (elements.deptFilter) elements.deptFilter.addEventListener('change', () => { currentPage = 1; loadContacts(); });
-    if (elements.statusFilter) elements.statusFilter.addEventListener('change', () => { currentPage = 1; loadContacts(); });
+    if (els.deptFilter) els.deptFilter.addEventListener('change', () => { currentPage = 1; loadContacts(); });
+    if (els.statusFilter) els.statusFilter.addEventListener('change', () => { currentPage = 1; loadContacts(); });
 
     // 3. ผูก Event ให้ฟอร์มบันทึกข้อมูล (เพิ่ม/แก้ไข)
-    if (elements.contactForm) {
-        elements.contactForm.addEventListener('submit', handleContactSubmit);
+    if (els.contactForm) {
+        els.contactForm.addEventListener('submit', handleContactSubmit);
     }
 });
 
@@ -51,10 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
  * ฟังก์ชันหลักสำหรับดึงข้อมูลจาก API และวาดตาราง
  */
 async function loadContacts() {
-    if (!elements.tableBody) return;
+    const els = getElements();
+    if (!els.tableBody) return;
 
     // แสดงสถานะกำลังโหลดในตาราง
-    elements.tableBody.innerHTML = `
+    els.tableBody.innerHTML = `
         <tr>
             <td colspan="7" class="text-center py-8 text-gray-500">
                 <div class="flex justify-center items-center gap-2">
@@ -66,9 +70,9 @@ async function loadContacts() {
     `;
 
     // เตรียมพารามิเตอร์สำหรับการค้นหา
-    const search = elements.searchInput ? elements.searchInput.value : '';
-    const deptId = elements.deptFilter ? elements.deptFilter.value : '';
-    const status = elements.statusFilter ? elements.statusFilter.value : '';
+    const search = els.searchInput ? els.searchInput.value.trim() : '';
+    const deptId = els.deptFilter ? els.deptFilter.value : '';
+    const status = els.statusFilter ? els.statusFilter.value : '';
 
     const queryParams = new URLSearchParams({
         search: search,
@@ -79,15 +83,13 @@ async function loadContacts() {
     });
 
     try {
-        // เรียกใช้ apiCall จาก app.js
         const response = await apiCall(`api/contacts/read.php?${queryParams.toString()}`);
-        
         if (response.status === 'success') {
             renderTable(response.data);
             renderPagination(response.pagination);
         }
     } catch (error) {
-        elements.tableBody.innerHTML = `
+        els.tableBody.innerHTML = `
             <tr>
                 <td colspan="7" class="text-center py-8 text-red-500">
                     <i class="ph-fill ph-warning-circle text-2xl mb-2"></i><br>
@@ -277,18 +279,14 @@ async function handleContactSubmit(e) {
 window.openEditModal = async function(id) {
     showToast('กำลังโหลดข้อมูล...', 'success');
     
-    // เคลียร์ฟอร์มก่อน
-    if(elements.contactForm) elements.contactForm.reset();
+    const els = getElements();
+    if (els.contactForm) els.contactForm.reset();
 
     try {
-        // เราใช้ API Read เดิม แต่ส่ง search ไปตรงๆ เพื่อจำลองการหาคนเดียว (หรือจะทำ API ดึง 1 คนแยกก็ได้)
-        // แต่ในที่นี้ ข้อมูลเรามีอยู่แล้วในตาราง จริงๆ สามารถดึงจาก HTML ได้เลย แต่เพื่อความชัวร์ ดึงจาก API ดีกว่า
-        const response = await apiCall(`api/contacts/read.php?search=${id}`);
-        // ค้นหารายการที่ id ตรงเป๊ะๆ
+        const response = await apiCall(`api/contacts/read.php?limit=10000`);
         const contact = response.data.find(c => c.id == id);
 
         if (contact) {
-            // นำข้อมูลไปหยอดใส่ Input ในฟอร์ม
             document.getElementById('form_id').value = contact.id;
             document.getElementById('form_first_name').value = contact.first_name;
             document.getElementById('form_last_name').value = contact.last_name;
@@ -297,14 +295,26 @@ window.openEditModal = async function(id) {
             document.getElementById('form_extension').value = contact.extension || '';
             document.getElementById('form_ip_address').value = contact.ip_address || '';
 
-            // เปลี่ยนชื่อหัว Modal
             document.getElementById('modalTitle').innerText = 'แก้ไขข้อมูลผู้ติดต่อ';
             
-            openModal(elements.contactModal);
+            openModal(els.contactModal);
         }
     } catch (error) {
         showToast('ไม่สามารถดึงข้อมูลได้', 'error');
     }
+}
+
+// ฟังก์ชันเปิด Modal สำหรับเพิ่มใหม่ (เคลียร์ค่าเก่าทิ้ง)
+window.openCreateModal = function() {
+    const els = getElements();
+    if (els.contactForm) {
+        els.contactForm.reset();
+        document.getElementById('form_id').value = '';
+    }
+    const modalTitle = document.getElementById('modalTitle');
+    if (modalTitle) modalTitle.innerText = 'เพิ่มผู้ติดต่อใหม่';
+    
+    openModal(els.contactModal);
 }
 
 // ฟังก์ชันเปิด Modal สำหรับเพิ่มใหม่ (เคลียร์ค่าเก่าทิ้ง)
