@@ -254,11 +254,15 @@ require_once __DIR__ . '/../includes/header.php';
         async function submitMyProfile(e) {
             e.preventDefault();
             const form = e.target;
-            const btn = form.querySelector('button[type="button"]:nth-child(2)'); // ปุ่มบันทึก
-            const origText = btn.innerHTML;
             
-            btn.innerHTML = '<div class="spinner-ring border-white w-4 h-4"></div> บันทึก...';
-            btn.disabled = true;
+            // 🛠️ แก้ไขการอ้างอิงปุ่มใหม่อ่านจาก Modal โดยตรง (เพราะปุ่มอยู่ต่อนอก Form)
+            const btn = document.querySelector('#myProfileModal button.bg-brand-500'); 
+            const origText = btn ? btn.innerHTML : '';
+            
+            if (btn) {
+                btn.innerHTML = '<div class="spinner-ring border-white w-4 h-4"></div> บันทึก...';
+                btn.disabled = true;
+            }
 
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
@@ -268,13 +272,15 @@ require_once __DIR__ . '/../includes/header.php';
                 if (response.status === 'success') {
                     showToast(response.message, 'success');
                     closeModal('myProfileModal');
-                    loadContacts(); // รีโหลดตาราง (ฟังก์ชันนี้อยู่ใน contacts.js)
+                    loadContacts(); // รีโหลดตาราง
                 }
             } catch (error) {
                 showToast(error.message, 'error');
             } finally {
-                btn.innerHTML = origText;
-                btn.disabled = false;
+                if (btn) {
+                    btn.innerHTML = origText;
+                    btn.disabled = false;
+                }
             }
         }
     </script>
