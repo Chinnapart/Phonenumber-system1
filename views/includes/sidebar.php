@@ -34,6 +34,16 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <div class="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar">
         
         <?php if ($isAdmin): ?>
+        
+        <?php endif; ?>
+            
+            <?php if ($isAdmin): ?>
+        
+        <?php endif; ?>
+<!-- Navigation Menu -->
+    <div class="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar">
+        
+        <?php if ($isAdmin): ?>
         <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">ภาพรวมระบบ</p>
         <ul class="space-y-1 mb-8">
             <li>
@@ -44,7 +54,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </a>
             </li>
         </ul>
-        <?php endif; ?>
 
         <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">จัดการข้อมูล</p>
         <ul class="space-y-1 mb-8">
@@ -55,15 +64,43 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     สมุดรายชื่อ (Directory)
                 </a>
             </li>
-            
-            <?php if ($isAdmin): ?>
+            <li>
+                <a href="<?= BASE_URL ?>views/admin/user_management.php" 
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= $currentPage === 'user_management.php' ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' ?>">
+                    <i class="ph <?= $currentPage === 'user_management.php' ? 'ph-users text-blue-600' : 'ph-users' ?> text-xl"></i>
+                    จัดการผู้ใช้งาน (Users)
+                </a>
+            </li>
+        </ul>
+
         <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">ระบบ</p>
         <ul class="space-y-1">
             <li>
-                <a href="#" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-500 hover:bg-gray-50 hover:text-gray-900 opacity-60 cursor-not-allowed" title="เร็วๆ นี้">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-500 hover:bg-gray-50 hover:text-gray-900 opacity-60 cursor-not-allowed" title="เร็วๆ นี้">
                     <i class="ph ph-clock-counter-clockwise text-xl"></i>
                     ประวัติกิจกรรม (Logs)
+                </a>
+            </li>
+        </ul>
+
+        <?php else: ?>
+        <!-- ========================================== -->
+        <!-- เมนูสำหรับผู้ใช้งานทั่วไป (User) -->
+        <!-- ========================================== -->
+        <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">พื้นที่ของฉัน (My Workspace)</p>
+        <ul class="space-y-1 mb-8">
+            <li>
+                <a href="<?= BASE_URL ?>views/user/dashboard.php" 
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= $currentPage === 'dashboard.php' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm border border-blue-100/50' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' ?>">
+                    <i class="ph <?= $currentPage === 'dashboard.php' ? 'ph-squares-four text-blue-600' : 'ph-squares-four' ?> text-xl"></i>
+                    ภาพรวมแผนก (My Team)
+                </a>
+            </li>
+            <li>
+                <a href="<?= BASE_URL ?>views/user/directory.php" 
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= $currentPage === 'directory.php' ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm border border-blue-100/50' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' ?>">
+                    <i class="ph <?= $currentPage === 'directory.php' ? 'ph-address-book text-blue-600' : 'ph-address-book' ?> text-xl"></i>
+                    สมุดรายชื่อ (Directory)
                 </a>
             </li>
         </ul>

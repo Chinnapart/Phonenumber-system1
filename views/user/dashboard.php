@@ -1,0 +1,191 @@
+<?php
+// ==========================================
+// User View: My Department Dashboard
+// Path: views/user/dashboard.php
+// ==========================================
+
+require_once __DIR__ . '/../../config/app.php';
+require_once __DIR__ . '/../../core/AuthMiddleware.php';
+require_once __DIR__ . '/../../core/Database.php';
+
+Auth::requireLogin();
+
+// 1. ดึงข้อมูล User ปัจจุบัน
+$currentUser = Auth::getCurrentUser();
+$fullName = $currentUser['full_name'];
+
+// 2. หาแผนกของ User ปัจจุบัน (โยงจากชื่อ-นามสกุล)
+$myProfile = Database::getRow(
+    "SELECT c.department_id, d.name AS dept_name, d.color_code 
+     FROM contacts c 
+     LEFT JOIN departments d ON c.department_id = d.id 
+     WHERE CONCAT(c.first_name, ' ', c.last_name) = ?", 
+    [$fullName]
+);
+
+$myDeptId = $myProfile ? $myProfile['department_id'] : null;
+$myDeptName = ($myProfile && $myProfile['dept_name']) ? $myProfile['dept_name'] : 'ยังไม่ระบุแผนก';
+$myDeptColor = ($myProfile && $myProfile['color_code']) ? $myProfile['color_code'] : '#94a3b8';
+
+// 3. ดึงรายชื่อพนักงานทั้งหมดที่อยู่ในแผนกเดียวกัน
+$deptContacts = [];
+$onlineCount = 0;
+$offlineCount = 0;
+
+if ($myDeptId) {
+    $deptContacts = Database::getAll(
+        "SELECT * FROM contacts WHERE department_id = ? ORDER BY first_name ASC", 
+        [$myDeptId]
+    );
+    // นับสถิติออนไลน์
+    foreach ($deptContacts as $c) {
+        if ($c['status'] === 'online') $onlineCount++;
+        if ($c['status'] === 'offline') $offlineCount++;
+    }
+}
+
+$pageTitle = 'ภาพรวมแผนก (My Team)';
+require_once __DIR__ . '/../includes/header.php';
+?>
+
+<style>
+    /* แอนิเมชันสำหรับก้อนสีเรืองแสงพื้นหลัง (Aura Blobs) */
+    @keyframes blob {
+        0% { transform: translate(0px, 0px) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+        100% { transform: translate(0px, 0px) scale(1); }
+    }
+    .animate-blob {
+        animation: blob 7s infinite;
+    }
+    .animation-delay-2000 { animation-delay: 2s; }
+    .animation-delay-4000 { animation-delay: 4s; }
+    
+    /* เอฟเฟกต์ Glassmorphism แบบพรีเมียมสุดๆ */
+    .premium-glass {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    }
+</style>
+
+<div class="relative min-h-[85vh] w-full p-2 lg:p-4 rounded-3xl overflow-hidden animate-fade-in">
+    
+    <!-- 🌟 Abstract Aura Backgrounds (ก้อนสีฟุ้งๆ ทันสมัย) -->
+    <div class="absolute top-[-10%] left-[10%] w-96 h-96 bg-purple-400/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob pointer-events-none"></div>
+    <div class="absolute top-[20%] right-[-5%] w-96 h-96 bg-cyan-400/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000 pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] left-[30%] w-96 h-96 bg-pink-400/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000 pointer-events-none"></div>
+
+    <!-- 🌟 Content Container -->
+    <div class="relative z-10 max-w-7xl mx-auto space-y-6">
+
+        <?php if (!$myDeptId): ?>
+            <!-- กรณีที่ User ยังไม่ได้อัปเดตโปรไฟล์/ระบุแผนก -->
+            <div class="premium-glass rounded-3xl p-10 text-center flex flex-col items-center justify-center min-h-[50vh]">
+                <div class="w-24 h-24 bg-white/60 rounded-full flex items-center justify-center shadow-inner mb-6">
+                    <i class="ph-fill ph-users-three text-5xl text-gray-400"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">ยังไม่พบข้อมูลกลุ่มงานของคุณ</h2>
+                <p class="text-gray-500 max-w-md mx-auto mb-8">คุณต้องทำการระบุ "แผนก (Department)" ในโปรไฟล์ส่วนตัวของคุณก่อน ระบบจึงจะสามารถดึงรายชื่อเพื่อนร่วมงานมาแสดงได้</p>
+            </div>
+        <?php else: ?>
+            
+            <!-- Header & Stats (Glass Design) -->
+            <div class="premium-glass rounded-3xl p-6 lg:p-8 flex flex-col lg:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-5">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg text-white text-3xl font-bold" style="background: <?= $myDeptColor ?>">
+                        <i class="ph-fill ph-users-three"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-1">กลุ่มงานของคุณ</p>
+                        <h1 class="text-3xl font-bold text-gray-900 tracking-tight flex items-center gap-3">
+                            แผนก <?= htmlspecialchars($myDeptName) ?>
+                        </h1>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="bg-white/60 rounded-2xl px-5 py-3 text-center border border-white/80 shadow-sm min-w-[100px]">
+                        <p class="text-xs text-gray-500 font-semibold mb-1">สมาชิกทีม</p>
+                        <p class="text-2xl font-bold text-gray-800"><?= count($deptContacts) ?></p>
+                    </div>
+                    <div class="bg-emerald-50/60 rounded-2xl px-5 py-3 text-center border border-emerald-100/80 shadow-sm min-w-[100px]">
+                        <p class="text-xs text-emerald-600 font-semibold mb-1">ออนไลน์</p>
+                        <p class="text-2xl font-bold text-emerald-700"><?= $onlineCount ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Members Grid Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-4">
+                <?php foreach ($deptContacts as $contact): ?>
+                    <!-- Glass Card for Contact -->
+                    <div class="premium-glass rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-white/60 group relative cursor-pointer">
+                        
+                        <!-- Status Dot -->
+                        <div class="absolute top-5 right-5">
+                            <?php if ($contact['status'] === 'online'): ?>
+                                <span class="flex h-3 w-3 relative" title="Online">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                                </span>
+                            <?php else: ?>
+                                <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-400 shadow-sm" title="Offline"></span>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Avatar -->
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-20 h-20 rounded-[1.25rem] bg-gradient-to-br from-indigo-100 to-purple-50 flex items-center justify-center shadow-inner mb-4 group-hover:scale-105 transition-transform duration-300 border border-white">
+                                <span class="text-2xl font-bold text-indigo-500 uppercase tracking-widest">
+                                    <?= substr($contact['first_name'], 0, 1) . substr($contact['last_name'], 0, 1) ?>
+                                </span>
+                            </div>
+                            
+                            <h3 class="text-lg font-bold text-gray-900 leading-tight mb-1">
+                                <?= htmlspecialchars($contact['first_name'] . ' ' . $contact['last_name']) ?>
+                            </h3>
+                            <p class="text-xs font-semibold text-brand-600 mb-5 bg-brand-50 px-3 py-1 rounded-full">
+                                <?= htmlspecialchars($contact['job_title'] ?: 'พนักงาน') ?>
+                            </p>
+                        </div>
+
+                        <!-- Contact Details -->
+                        <div class="space-y-3 pt-4 border-t border-white/50">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500 flex items-center gap-2"><i class="ph ph-phone text-lg"></i> เบอร์ต่อ</span>
+                                <span class="font-mono font-bold text-gray-800"><?= htmlspecialchars($contact['extension'] ?: '-') ?></span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500 flex items-center gap-2"><i class="ph ph-device-mobile text-lg"></i> มือถือ</span>
+                                <span class="font-mono font-semibold text-gray-800"><?= htmlspecialchars($contact['mobile_number'] ?: '-') ?></span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500 flex items-center gap-2"><i class="ph ph-laptop text-lg"></i> IP Address</span>
+                                <span class="font-mono text-indigo-600 font-semibold bg-white/50 px-2 py-0.5 rounded-md border border-indigo-100/50">
+                                    <?= htmlspecialchars($contact['ip_address'] ?: '-') ?>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+        <?php endif; ?>
+    </div>
+</div>
+
+<?php
+// เนื่องจากเราไม่ได้แยกไฟล์ footer.php จึงแนบการเรียก JS ปิดท้ายตรงนี้
+?>
+        </main> <!-- ปิดแท็ก main จาก header.php -->
+    </div> <!-- ปิดแท็ก div.flex-1 จาก header.php -->
+
+    <!-- Core Scripts -->
+    <script src="<?= BASE_URL ?>assets/js/app.js"></script>
+</body>
+</html>
