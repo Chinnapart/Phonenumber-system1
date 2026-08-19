@@ -107,14 +107,38 @@ require_once __DIR__ . '/../includes/header.php';
                     </div>
                 </div>
 
-                <div class="flex gap-4">
-                    <div class="bg-white/60 rounded-2xl px-5 py-3 text-center border border-white/80 shadow-sm min-w-[100px]">
-                        <p class="text-xs text-gray-500 font-semibold mb-1">สมาชิกทีม</p>
-                        <p class="text-2xl font-bold text-gray-800"><?= count($deptContacts) ?></p>
+                <!-- กลุ่มกล่องด้านขวา (Clock & Stats) -->
+                <div class="flex flex-wrap items-center justify-start lg:justify-end gap-4 w-full lg:w-auto mt-4 lg:mt-0">
+                    
+                    <!-- 🌟 Live Clock Widget (Wow Design) 🌟 -->
+                    <div class="relative overflow-hidden bg-white/40 border border-white/60 backdrop-blur-md rounded-2xl px-5 py-3 flex items-center gap-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] group hover:bg-white/70 transition-all duration-300 hover:-translate-y-1 cursor-default">
+                        <!-- แสง Glow สวยๆ ซ่อนอยู่ข้างหลัง -->
+                        <div class="absolute -left-4 -top-4 w-16 h-16 bg-brand-400/20 rounded-full blur-2xl group-hover:bg-brand-400/40 transition-all duration-500"></div>
+                        
+                        <!-- ไอคอนนาฬิกา -->
+                        <div class="relative w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500 via-indigo-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-brand-500/30">
+                            <i class="ph-fill ph-clock text-2xl group-hover:animate-pulse"></i>
+                        </div>
+                        
+                        <!-- ตัวเลขเวลา -->
+                        <div class="flex flex-col relative z-10 min-w-[90px]">
+                            <div class="flex items-baseline gap-1">
+                                <span id="userLiveTime" class="text-2xl font-bold text-gray-800 font-mono tracking-tight leading-none drop-shadow-sm">--:--:--</span>
+                            </div>
+                            <span id="userLiveDate" class="text-[0.65rem] font-bold text-brand-600 uppercase tracking-widest mt-1">กำลังโหลด...</span>
+                        </div>
                     </div>
-                    <div class="bg-emerald-50/60 rounded-2xl px-5 py-3 text-center border border-emerald-100/80 shadow-sm min-w-[100px]">
-                        <p class="text-xs text-emerald-600 font-semibold mb-1">ออนไลน์</p>
-                        <p class="text-2xl font-bold text-emerald-700"><?= $onlineCount ?></p>
+
+                    <!-- กล่องสถิติเดิม (ปรับดีไซน์ให้เข้าเซ็ตกัน) -->
+                    <div class="flex gap-3">
+                        <div class="bg-white/60 rounded-2xl px-5 py-3 text-center border border-white/80 shadow-sm min-w-[90px] hover:-translate-y-1 transition-transform duration-300">
+                            <p class="text-[0.65rem] text-gray-500 font-bold uppercase tracking-wider mb-1">สมาชิกทีม</p>
+                            <p class="text-2xl font-black text-gray-800 leading-none"><?= count($deptContacts) ?></p>
+                        </div>
+                        <div class="bg-gradient-to-br from-emerald-50/80 to-emerald-100/50 rounded-2xl px-5 py-3 text-center border border-emerald-200/50 shadow-sm min-w-[90px] hover:-translate-y-1 transition-transform duration-300">
+                            <p class="text-[0.65rem] text-emerald-600 font-bold uppercase tracking-wider mb-1">ออนไลน์</p>
+                            <p class="text-2xl font-black text-emerald-600 leading-none"><?= $onlineCount ?></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -191,5 +215,34 @@ require_once __DIR__ . '/../includes/header.php';
 
     <!-- Core Scripts -->
     <script src="<?= BASE_URL ?>assets/js/app.js"></script>
+
+    <!-- Script สำหรับ Live Clock ว้าวๆ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timeEl = document.getElementById('userLiveTime');
+            const dateEl = document.getElementById('userLiveDate');
+            
+            if (!timeEl || !dateEl) return;
+
+            function updateUserClock() {
+                const now = new Date();
+                
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                
+                // ใส่ลูกเล่นให้เครื่องหมาย : กะพริบ และมีสีสัน
+                timeEl.innerHTML = `${hours}<span class="animate-pulse text-brand-500 mx-0.5">:</span>${minutes}<span class="animate-pulse text-brand-500 mx-0.5">:</span>${seconds}`;
+                
+                // แปลงรูปแบบวันที่เป็นภาษาไทย
+                const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+                dateEl.textContent = now.toLocaleDateString('th-TH', options);
+            }
+
+            // เรียกใช้งานครั้งแรกทันที และตั้งเวลาให้ทำงานทุกๆ 1 วินาที
+            updateUserClock();
+            setInterval(updateUserClock, 1000);
+        });
+    </script>
 </body>
 </html>
