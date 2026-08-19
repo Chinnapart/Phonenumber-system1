@@ -147,21 +147,21 @@ function renderTable(contacts) {
             : '<span class="text-gray-400">-</span>';
 
         html += `
-            <tr class="hover:bg-slate-50 transition-colors group">
-                <td class="font-medium text-gray-900">
-                    <div class="flex items-center gap-3">
-    ${contact.avatar_url 
-        ? `<img src="${BASE_URL}${contact.avatar_url}" alt="Profile" class="w-9 h-9 rounded-full object-cover shadow-sm border border-gray-100 flex-shrink-0">` 
-        : `<div class="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs uppercase flex-shrink-0 shadow-sm">
-            ${contact.first_name.charAt(0)}${contact.last_name.charAt(0)}
-           </div>`
-    }
-    <div>
-                            ${contact.first_name} ${contact.last_name}
-                            <div class="text-xs text-gray-500 font-normal">${contact.job_title || ''}</div>
-                        </div>
-                    </div>
-                </td>
+    <tr class="hover:bg-slate-50 transition-colors group">
+        <td class="font-medium text-gray-900">
+            <div class="flex items-center gap-3">
+                ${contact.avatar_url 
+                    ? `<img src="${BASE_URL}${contact.avatar_url}" alt="Profile" class="w-9 h-9 rounded-full object-cover shadow-sm border border-gray-100 flex-shrink-0">` 
+                    : `<div class="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs uppercase flex-shrink-0 shadow-sm">
+                        ${contact.first_name.charAt(0)}${contact.last_name.charAt(0)}
+                       </div>`
+                }
+                <div>
+                    ${contact.first_name} ${contact.last_name}
+                    <div class="text-xs text-gray-500 font-normal">${contact.job_title || ''}</div>
+                </div>
+            </div>
+        </td>
                 <td>${deptHtml}</td>
                 <td class="font-mono text-gray-600">${contact.extension || '-'}</td>
                 <td class="font-mono text-blue-600" id="ip-cell-${contact.id}">${contact.ip_address || '-'}</td>
