@@ -33,7 +33,11 @@ require_once __DIR__ . '/../includes/header.php';
             <p class="text-sm text-gray-500 mt-1">ค้นหาเบอร์โทรภายในและตรวจสอบสถานะการเชื่อมต่อ</p>
         </div>
         <div class="flex items-center gap-3">
-            <!-- 🌟 ปุ่มแก้ไขโปรไฟล์ของฉัน (เพิ่มใหม่) -->
+           
+        
+        
+        
+        <!-- 🌟 ปุ่มแก้ไขโปรไฟล์ของฉัน (เพิ่มใหม่) -->
             <button onclick="openMyProfileModal()" class="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium px-4 py-2.5 rounded-xl shadow-md shadow-brand-500/30 transition-all duration-200 hover:-translate-y-0.5">
                 <i class="ph ph-user-circle text-lg"></i>
                 โปรไฟล์ของฉัน
@@ -140,6 +144,19 @@ require_once __DIR__ . '/../includes/header.php';
             <form id="myProfileForm" class="space-y-5" onsubmit="submitMyProfile(event)">
                 <input type="hidden" id="my_profile_id" name="id">
 
+                <!-- เพิ่มส่วนอัปโหลดรูปภาพตรงนี้ -->
+    <div class="flex flex-col items-center mb-6">
+        <div class="relative w-24 h-24 mb-2">
+            <img id="my_profile_avatar_preview" src="https://ui-avatars.com/api/?name=User&background=random" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md">
+            <label for="my_profile_avatar" class="absolute bottom-0 right-0 bg-brand-500 text-white p-1.5 rounded-full cursor-pointer shadow-sm hover:bg-brand-600 transition-colors">
+                <i class="ph ph-camera"></i>
+            </label>
+        </div>
+        <input type="file" id="my_profile_avatar" name="avatar" accept="image/jpeg, image/png" class="hidden" onchange="previewAvatar(this)">
+        <p class="text-[0.65rem] text-gray-400">รองรับไฟล์ JPG, PNG</p>
+    </div>
+    <!-- สิ้นสุดส่วนอัปโหลดรูปภาพ -->
+
                 <!-- แสดงชื่อนามสกุล แบบ Read-only -->
                 <div class="p-4 bg-blue-50/50 border border-blue-100 rounded-xl mb-4">
                     <p class="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">เชื่อมโยงบัญชีจากชื่อ</p>
@@ -227,8 +244,21 @@ require_once __DIR__ . '/../includes/header.php';
     <script src="<?= BASE_URL ?>assets/js/app.js"></script>
     <script src="<?= BASE_URL ?>assets/js/contacts.js"></script>
 
+   
+    
     <!-- Script จัดการหน้าโปรไฟล์ส่วนตัวของ User -->
     <script>
+        
+        function previewAvatar(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('my_profile_avatar_preview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+        
         async function openMyProfileModal() {
             showToast('กำลังโหลดข้อมูลโปรไฟล์...', 'success');
             try {
@@ -244,6 +274,10 @@ require_once __DIR__ . '/../includes/header.php';
                     document.getElementById('my_profile_mobile').value = data.mobile_number || '';
                     document.getElementById('my_profile_ip').value = data.ip_address || '';
 
+                    // เพิ่มบรรทัดนี้: โหลดรูปโปรไฟล์เดิมมาแสดง ถ้าไม่มีให้ใช้รูป Default
+const avatarPreview = document.getElementById('my_profile_avatar_preview');
+avatarPreview.src = data.avatar_url ? BASE_URL + data.avatar_url : `https://ui-avatars.com/api/?name=${data.first_name}&background=random`;            
+                    
                     openModal('myProfileModal');
                 }
             } catch (error) {
@@ -252,37 +286,44 @@ require_once __DIR__ . '/../includes/header.php';
         }
 
         async function submitMyProfile(e) {
-            e.preventDefault();
-            const form = e.target;
-            
-            // 🛠️ แก้ไขการอ้างอิงปุ่มใหม่อ่านจาก Modal โดยตรง (เพราะปุ่มอยู่ต่อนอก Form)
-            const btn = document.querySelector('#myProfileModal button.bg-brand-500'); 
-            const origText = btn ? btn.innerHTML : '';
-            
-            if (btn) {
-                btn.innerHTML = '<div class="spinner-ring border-white w-4 h-4"></div> บันทึก...';
-                btn.disabled = true;
-            }
+    e.preventDefault();
+    const form = e.target;
+    
+    const btn = document.querySelector('#myProfileModal button.bg-brand-500'); 
+    const origText = btn ? btn.innerHTML : '';
+    
+    if (btn) {
+        btn.innerHTML = '<div class="spinner-ring border-white w-4 h-4"></div> บันทึก...';
+        btn.disabled = true;
+    }
 
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
+    // เก็บข้อมูลฟอร์มและไฟล์ภาพ
+    const formData = new FormData(form);
 
-            try {
-                const response = await apiCall('api/contacts/my_profile.php', 'POST', data);
-                if (response.status === 'success') {
-                    showToast(response.message, 'success');
-                    closeModal('myProfileModal');
-                    loadContacts(); // รีโหลดตาราง
-                }
-            } catch (error) {
-                showToast(error.message, 'error');
-            } finally {
-                if (btn) {
-                    btn.innerHTML = origText;
-                    btn.disabled = false;
-                }
-            }
+    try {
+        // ใช้ fetch ปกติแทน apiCall เพื่อให้สามารถส่งไฟล์รูป (multipart/form-data) ได้
+        const response = await fetch(BASE_URL + 'api/contacts/my_profile.php', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            showToast(result.message, 'success');
+            closeModal('myProfileModal');
+            loadContacts(); 
+        } else {
+            showToast(result.message, 'error');
         }
+    } catch (error) {
+        showToast(error.message || 'เกิดข้อผิดพลาดในการบันทึก', 'error');
+    } finally {
+        if (btn) {
+            btn.innerHTML = origText;
+            btn.disabled = false;
+        }
+    }
+}
     </script>
 </body>
 </html>
