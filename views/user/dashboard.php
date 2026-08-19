@@ -139,11 +139,15 @@ require_once __DIR__ . '/../includes/header.php';
 
                         <!-- Avatar -->
                         <div class="flex flex-col items-center text-center">
-                            <div class="w-20 h-20 rounded-[1.25rem] bg-gradient-to-br from-indigo-100 to-purple-50 flex items-center justify-center shadow-inner mb-4 group-hover:scale-105 transition-transform duration-300 border border-white">
-                                <span class="text-2xl font-bold text-indigo-500 uppercase tracking-widest">
-                                    <?= substr($contact['first_name'], 0, 1) . substr($contact['last_name'], 0, 1) ?>
-                                </span>
-                            </div>
+                            <div class="w-20 h-20 rounded-[1.25rem] bg-gradient-to-br from-indigo-100 to-purple-50 flex items-center justify-center shadow-inner mb-4 group-hover:scale-105 transition-transform duration-300 border border-white overflow-hidden">
+    <?php if (!empty($contact['avatar_url'])): ?>
+        <img src="<?= BASE_URL . $contact['avatar_url'] ?>" alt="Profile" class="w-full h-full object-cover">
+    <?php else: ?>
+        <span class="text-2xl font-bold text-indigo-500 uppercase tracking-widest">
+            <?= substr($contact['first_name'], 0, 1) . substr($contact['last_name'], 0, 1) ?>
+        </span>
+    <?php endif; ?>
+</div>
                             
                             <h3 class="text-lg font-bold text-gray-900 leading-tight mb-1">
                                 <?= htmlspecialchars($contact['first_name'] . ' ' . $contact['last_name']) ?>

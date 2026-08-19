@@ -138,10 +138,15 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <div class="p-4 border-t border-gray-100">
         <div class="bg-gray-50 rounded-2xl p-4 flex items-center justify-between border border-gray-200/60">
             <div class="flex items-center gap-3 overflow-hidden">
-                <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold flex-shrink-0">
-                    <!-- โชว์ตัวอักษรตัวแรกของชื่อ -->
-                    <?= strtoupper(substr($currentUser['full_name'], 0, 1)) ?>
-                </div>
+                
+            <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold flex-shrink-0 overflow-hidden">
+    <?php if (!empty($currentUser['avatar_url'])): ?>
+        <img src="<?= BASE_URL . $currentUser['avatar_url'] ?>" alt="Profile" class="w-full h-full object-cover">
+    <?php else: ?>
+        <?= strtoupper(substr($currentUser['full_name'], 0, 1)) ?>
+    <?php endif; ?>
+</div>
+                
                 <div class="overflow-hidden">
                     <p class="text-sm font-semibold text-gray-900 truncate"><?= htmlspecialchars($currentUser['full_name']) ?></p>
                     <p class="text-xs text-gray-500 truncate capitalize"><?= htmlspecialchars($currentUser['role']) ?></p>

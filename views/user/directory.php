@@ -312,9 +312,33 @@ avatarPreview.src = data.avatar_url ? BASE_URL + data.avatar_url : `https://ui-a
             showToast(result.message, 'success');
             closeModal('myProfileModal');
             loadContacts(); 
+            
+            // --- เพิ่มโค้ดส่วนนี้เข้าไปใหม่ ---
+            // 1. อัปเดตรูปบน Sidebar (จุดที่คุณต้องการ)
+            // หา element รูปโปรไฟล์ที่แถบด้านซ้ายล่าง แล้วอัปเดต src 
+            const sidebarAvatar = document.querySelector('aside .rounded-full img'); 
+            if (sidebarAvatar) {
+                // ดึงรูปใหม่จาก preview หรือจาก result (ถ้า API ส่งกลับมา) 
+                const newAvatarUrl = document.getElementById('my_profile_avatar_preview').src;
+                sidebarAvatar.src = newAvatarUrl;
+            } else {
+                // ถ้ารูปเดิมเป็น div วงกลม (ยังไม่มีรูป) อาจจะต้อง reload เพื่อให้แสดงผลถูกต้อง
+                window.location.reload(); 
+            }
+            
+            // 2. อัปเดตรูปบน Topbar (มุมขวาบน)
+            const topbarAvatar = document.querySelector('header .rounded-full img');
+            if (topbarAvatar) {
+                const newAvatarUrl = document.getElementById('my_profile_avatar_preview').src;
+                topbarAvatar.src = newAvatarUrl;
+            }
+            // ---------------------------------
+            
         } else {
             showToast(result.message, 'error');
         }
+    
+    
     } catch (error) {
         showToast(error.message || 'เกิดข้อผิดพลาดในการบันทึก', 'error');
     } finally {

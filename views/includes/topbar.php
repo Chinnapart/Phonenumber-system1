@@ -70,9 +70,13 @@ if ($hour >= 5 && $hour < 12) {
                 <p class="text-xs text-brand-600 font-medium capitalize"><?= htmlspecialchars($currentUser['role']) ?></p>
             </div>
             <!-- รูปโปรไฟล์ Avatar -->
-            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-500 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-brand-500/20 border-2 border-white">
-                <?= strtoupper(substr($currentUser['full_name'], 0, 1)) ?>
-            </div>
+            <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold flex-shrink-0 overflow-hidden">
+    <?php if (!empty($currentUser['avatar_url'])): ?>
+        <img src="<?= BASE_URL . $currentUser['avatar_url'] ?>" alt="Profile" class="w-full h-full object-cover">
+    <?php else: ?>
+        <?= strtoupper(substr($currentUser['full_name'], 0, 1)) ?>
+    <?php endif; ?>
+</div>
         </div>
     </div>
 </header>
