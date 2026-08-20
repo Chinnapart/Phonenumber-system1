@@ -98,11 +98,12 @@ require_once __DIR__ . '/../includes/header.php';
             <table class="custom-table whitespace-nowrap">
                 <thead>
                     <tr>
-                        <th class="text-left w-2/6">ชื่อ - นามสกุล</th>
-                        <th class="text-left w-1/6">แผนก</th>
-                        <th class="text-left w-1/6">เบอร์ต่อ (Ext.)</th>
-                        <th class="text-left w-1/6">IP Address</th>
-                        <th class="text-left w-1/6">สถานะ</th>
+                        <th class="text-center w-2/6">ชื่อ - นามสกุล</th>
+                        <th class="text-center w-2/6">สถานะUser</th>
+                        <th class="text-center w-1/6">แผนก</th>
+                        <th class="text-center w-1/6">เบอร์</th>
+                        <th class="text-center w-1/6">IP</th>
+                        <th class="text-center w-1/6">สถานะ</th>
                         <th class="text-center w-32">จัดการ</th> 
                     </tr>
                 </thead>
