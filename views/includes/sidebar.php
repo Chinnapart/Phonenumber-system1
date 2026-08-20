@@ -163,6 +163,14 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </button>
 
             </div>
+        
+        <!-- 🌟 ปุ่มเปลี่ยนรหัสผ่าน (เพิ่มใหม่) 🌟 -->
+            <button onclick="openChangePasswordModal()" class="w-full mt-4 relative group overflow-hidden rounded-2xl p-3 bg-slate-50 border border-slate-200 hover:border-transparent hover:shadow-[0_8px_15px_rgba(71,85,105,0.15)] transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-3">
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-700 to-slate-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <i class="ph-fill ph-lock-key text-lg text-slate-600 group-hover:text-white transition-colors"></i>
+                <span class="text-sm font-bold text-slate-700 group-hover:text-white transition-colors">เปลี่ยนรหัสผ่าน</span>
+            </button>
+        
         </div>
         <!-- 🌟 สิ้นสุด 4 ปุ่มสถานะ 🌟 -->
 

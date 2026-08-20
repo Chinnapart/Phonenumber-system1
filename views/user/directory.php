@@ -236,7 +236,79 @@ require_once __DIR__ . '/../includes/header.php';
 <?php
 // เนื่องจากเรายังไม่ได้แยกไฟล์ footer.php ผมจึงทำการปิดแท็กและแนบ Script ไว้ตรงนี้เลยครับ
 ?>
-        </main> <!-- ปิดแท็ก main จาก header.php -->
+       
+    <!-- ==========================================
+     🌟 MODAL: Change Password
+     ========================================== -->
+<div id="changePasswordModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="modal-backdrop absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
+    <div class="bg-white rounded-2xl w-full max-w-sm mx-4 z-10 modal-content shadow-2xl flex flex-col">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-slate-50/50 rounded-t-2xl">
+            <div class="flex items-center gap-2 text-slate-700">
+                <i class="ph-fill ph-lock-key text-2xl"></i>
+                <h3 class="text-lg font-bold text-gray-900">เปลี่ยนรหัสผ่าน</h3>
+            </div>
+            <button onclick="closeModal('changePasswordModal')" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">
+                <i class="ph ph-x text-lg"></i>
+            </button>
+        </div>
+
+        <div class="p-6">
+            <form id="changePasswordForm" class="space-y-4" onsubmit="submitChangePassword(event)">
+                <!-- รหัสผ่านปัจจุบัน -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">รหัสผ่านปัจจุบัน</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-500">
+                            <i class="ph ph-lock-key"></i>
+                        </div>
+                        <input type="password" name="current_password" required 
+                               class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none" placeholder="กรอกรหัสผ่านปัจจุบัน">
+                    </div>
+                </div>
+
+                <!-- รหัสผ่านใหม่ -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">รหัสผ่านใหม่</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-500">
+                            <i class="ph ph-shield-check"></i>
+                        </div>
+                        <input type="password" name="new_password" id="new_password" required minlength="6"
+                               class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none" placeholder="ตั้งรหัสผ่านใหม่อย่างน้อย 6 ตัวอักษร">
+                    </div>
+                </div>
+
+                <!-- ยืนยันรหัสผ่านใหม่ -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">ยืนยันรหัสผ่านใหม่</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-500">
+                            <i class="ph ph-check-circle"></i>
+                        </div>
+                        <input type="password" name="confirm_password" id="confirm_password" required minlength="6"
+                               class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none" placeholder="กรอกรหัสผ่านใหม่อีกครั้ง">
+                    </div>
+                </div>
+                
+                <button type="submit" class="hidden"></button>
+            </form>
+        </div>
+
+        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3 bg-gray-50 rounded-b-2xl">
+            <button type="button" onclick="closeModal('changePasswordModal')" class="px-5 py-2.5 rounded-xl text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors">
+                ยกเลิก
+            </button>
+            <button type="button" onclick="document.getElementById('changePasswordForm').requestSubmit()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-slate-800 hover:bg-slate-900 shadow-md shadow-slate-500/30 transition-all duration-200 hover:-translate-y-0.5">
+                <i class="ph ph-check-circle text-lg"></i>
+                บันทึกรหัสผ่าน
+            </button>
+        </div>
+    </div>
+</div>
+    
+    
+    </main> <!-- ปิดแท็ก main จาก header.php -->
     </div> <!-- ปิดแท็ก div.flex-1 จาก header.php -->
 
     <!-- ========================================== -->
@@ -349,6 +421,50 @@ avatarPreview.src = data.avatar_url ? BASE_URL + data.avatar_url : `https://ui-a
         }
     }
 }
+    // ---------------------------------------------
+        // ฟังก์ชันจัดการเปลี่ยนรหัสผ่าน
+        // ---------------------------------------------
+        function openChangePasswordModal() {
+            document.getElementById('changePasswordForm').reset();
+            openModal('changePasswordModal');
+        }
+
+        async function submitChangePassword(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const newPwd = document.getElementById('new_password').value;
+            const confirmPwd = document.getElementById('confirm_password').value;
+
+            if (newPwd !== confirmPwd) {
+                showToast('รหัสผ่านใหม่และการยืนยันไม่ตรงกัน', 'error');
+                return;
+            }
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                // สร้าง API สำหรับเปลี่ยนรหัสผ่าน 
+                const response = await fetch(BASE_URL + 'api/auth/change_password.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    showToast(result.message, 'success');
+                    closeModal('changePasswordModal');
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (error) {
+                showToast('เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน', 'error');
+            }
+        }
+    
     </script>
 </body>
 </html>
