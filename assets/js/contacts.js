@@ -163,11 +163,20 @@ function renderTable(contacts) {
                     </div>
                 </td>
 
-                <!-- 🌟 1. ส่วนที่เพิ่มใหม่: คอลัมน์สถานะ User 🌟 -->
-                <td>
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-sm">
-                        <i class="ph-fill ph-user-circle mr-1.5 text-sm"></i> User
-                    </span>
+                <!-- 🌟 ส่วนที่เพิ่มใหม่: คอลัมน์สถานะ User แบบ Dynamic 🌟 -->
+                <td class="text-center">
+                    ${(function() {
+                        switch(contact.work_status) {
+                            case 'on_call':
+                                return `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-sm"><i class="ph-fill ph-phone-call mr-1.5 text-sm"></i> ติดสาย</span>`;
+                            case 'away':
+                                return `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider bg-amber-50 text-amber-600 border border-amber-100 shadow-sm"><i class="ph-fill ph-clock mr-1.5 text-sm"></i> ไม่อยู่</span>`;
+                            case 'busy':
+                                return `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider bg-rose-50 text-rose-600 border border-rose-100 shadow-sm"><i class="ph-fill ph-minus-circle mr-1.5 text-sm"></i> ไม่ว่าง</span>`;
+                            default: // 'available' หรือค่าว่าง
+                                return `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm"><i class="ph-fill ph-check-circle mr-1.5 text-sm"></i> ว่าง</span>`;
+                        }
+                    })()}
                 </td>
                 <!-- 🌟 สิ้นสุดส่วนที่เพิ่มใหม่ 🌟 -->
 

@@ -127,7 +127,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             <div class="grid grid-cols-2 gap-3">
                 
                 <!-- 1. ว่าง (Available) -->
-                <button class="relative group overflow-hidden rounded-2xl p-3 bg-white border border-emerald-100 hover:border-transparent hover:shadow-[0_8px_15px_rgba(16,185,129,0.15)] transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center gap-2">
+                <button onclick="updateMyWorkStatus('available')" class="relative group overflow-hidden rounded-2xl p-3 bg-white border border-emerald-100 hover:border-transparent hover:shadow-[0_8px_15px_rgba(16,185,129,0.15)] transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center gap-2">
                     <div class="absolute inset-0 bg-gradient-to-br from-emerald-50 to-green-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-emerald-400 group-hover:to-green-500 group-hover:text-white shadow-sm transition-all duration-300">
                         <i class="ph-fill ph-check-circle text-xl group-hover:scale-110 transition-transform"></i>
@@ -136,7 +136,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </button>
 
                 <!-- 2. ติดสาย (On a call) -->
-                <button class="relative group overflow-hidden rounded-2xl p-3 bg-white border border-indigo-100 hover:border-transparent hover:shadow-[0_8px_15px_rgba(99,102,241,0.15)] transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center gap-2">
+                <button onclick="updateMyWorkStatus('on_call')" class="relative group overflow-hidden rounded-2xl p-3 bg-white border border-indigo-100 hover:border-transparent hover:shadow-[0_8px_15px_rgba(99,102,241,0.15)] transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center gap-2">
                     <div class="absolute inset-0 bg-gradient-to-br from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-indigo-400 group-hover:to-blue-500 group-hover:text-white shadow-sm transition-all duration-300">
                         <i class="ph-fill ph-phone-call text-xl group-hover:scale-110 transition-transform"></i>
@@ -145,7 +145,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </button>
 
                 <!-- 3. ไม่อยู่ (Away) -->
-                <button class="relative group overflow-hidden rounded-2xl p-3 bg-white border border-amber-100 hover:border-transparent hover:shadow-[0_8px_15px_rgba(245,158,11,0.15)] transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center gap-2">
+                <button onclick="updateMyWorkStatus('away')" class="relative group overflow-hidden rounded-2xl p-3 bg-white border border-amber-100 hover:border-transparent hover:shadow-[0_8px_15px_rgba(245,158,11,0.15)] transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center gap-2">
                     <div class="absolute inset-0 bg-gradient-to-br from-amber-50 to-orange-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-amber-400 group-hover:to-orange-500 group-hover:text-white shadow-sm transition-all duration-300">
                         <i class="ph-fill ph-clock text-xl group-hover:scale-110 transition-transform"></i>
@@ -154,7 +154,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </button>
 
                 <!-- 4. ไม่ว่าง (Busy) -->
-                <button class="relative group overflow-hidden rounded-2xl p-3 bg-white border border-rose-100 hover:border-transparent hover:shadow-[0_8px_15px_rgba(244,63,94,0.15)] transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center gap-2">
+                <button onclick="updateMyWorkStatus('busy')" class="relative group overflow-hidden rounded-2xl p-3 bg-white border border-rose-100 hover:border-transparent hover:shadow-[0_8px_15px_rgba(244,63,94,0.15)] transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center gap-2">
                     <div class="absolute inset-0 bg-gradient-to-br from-rose-50 to-red-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-rose-400 group-hover:to-red-500 group-hover:text-white shadow-sm transition-all duration-300">
                         <i class="ph-fill ph-minus-circle text-xl group-hover:scale-110 transition-transform"></i>
@@ -207,6 +207,32 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             } catch (error) {
                 alert('เกิดข้อผิดพลาดในการออกจากระบบ');
             }
+        }
+    }
+</script>
+
+<script>
+    // สคริปต์สำหรับปุ่มอัปเดตสถานะการทำงาน
+    async function updateMyWorkStatus(status) {
+        try {
+            const response = await fetch('<?= BASE_URL ?>api/contacts/update_work_status.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: status })
+            });
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                showToast(result.message, 'success');
+                // ถ้าเปิดอยู่หน้า Directory ให้รีเฟรชตารางอัตโนมัติ
+                if (typeof loadContacts === 'function') {
+                    loadContacts();
+                }
+            } else {
+                showToast(result.message, 'error');
+            }
+        } catch (error) {
+            showToast('เกิดข้อผิดพลาดในการเชื่อมต่อระบบ', 'error');
         }
     }
 </script>

@@ -32,7 +32,7 @@ try {
     // 5. เตรียมคำสั่ง SQL พื้นฐาน (JOIN ตาราง contacts กับ departments)
     $sql = "SELECT 
                 c.id, c.first_name, c.last_name, c.job_title, 
-                c.extension, c.mobile_number, c.ip_address, c.status, c.avatar_url,
+                c.extension, c.mobile_number, c.ip_address, c.status, c.avatar_url, c.work_status,
                 d.name AS department_name, d.color_code AS department_color
             FROM contacts c
             LEFT JOIN departments d ON c.department_id = d.id
