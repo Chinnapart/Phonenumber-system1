@@ -34,16 +34,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <div class="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar">
         
         <?php if ($isAdmin): ?>
-        
-        <?php endif; ?>
-            
-            <?php if ($isAdmin): ?>
-        
-        <?php endif; ?>
-<!-- Navigation Menu -->
-    <div class="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar">
-        
-        <?php if ($isAdmin): ?>
         <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">ภาพรวมระบบ</p>
         <ul class="space-y-1 mb-8">
             <li>
@@ -106,15 +96,15 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         </ul>
         <?php endif; ?>
 
-        <!-- 🌟 เริ่มต้นโค้ดเมนูแก้ไขโปรไฟล์ (Luxurious Design) 🌟 -->
-        <div class="mt-8 mb-4 px-4">
+        <!-- 🌟 เริ่มต้นโค้ดเมนูแก้ไขโปรไฟล์ 🌟 -->
+        <div class="mt-8 mb-6 px-4">
             <button onclick="if(typeof openMyProfileModal === 'function') openMyProfileModal(); else window.location.href='<?= BASE_URL ?>views/user/directory.php';" 
                     class="w-full relative group overflow-hidden rounded-2xl p-[1.5px] transition-all duration-300 hover:shadow-[0_8px_20px_rgb(59,130,246,0.25)] text-left">
                 
-                <!-- Animated Gradient Border (กรอบเรืองแสง) -->
+                <!-- Animated Gradient Border -->
                 <div class="absolute inset-0 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500 opacity-50 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
-                <!-- Inner Content (เนื้อหาด้านใน) -->
+                <!-- Inner Content -->
                 <div class="relative flex items-center gap-3 bg-white px-4 py-3.5 rounded-[14px] transition-all duration-300 group-hover:bg-opacity-95">
                     <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 text-indigo-600 group-hover:scale-110 group-hover:text-blue-600 transition-all duration-300 shadow-sm">
                         <i class="ph-fill ph-user-circle-gear text-xl"></i>
@@ -131,9 +121,53 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         </div>
         <!-- 🌟 สิ้นสุดโค้ดเมนูแก้ไขโปรไฟล์ 🌟 -->
 
+        <!-- 🌟 เริ่มต้น 4 ปุ่มสถานะ (Status Control - Wow Design) 🌟 -->
+        <div class="px-4 pb-4">
+            <p class="text-[0.65rem] font-bold text-gray-400 uppercase tracking-widest mb-3 pl-1">อัปเดตสถานะ (My Status)</p>
+            <div class="grid grid-cols-2 gap-3">
+                
+                <!-- 1. ว่าง (Available) -->
+                <button class="relative group overflow-hidden rounded-2xl p-3 bg-white border border-emerald-100 hover:border-transparent hover:shadow-[0_8px_15px_rgba(16,185,129,0.15)] transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center gap-2">
+                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-50 to-green-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-emerald-400 group-hover:to-green-500 group-hover:text-white shadow-sm transition-all duration-300">
+                        <i class="ph-fill ph-check-circle text-xl group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <span class="relative text-xs font-bold text-slate-700 group-hover:text-emerald-700 transition-colors">ว่าง</span>
+                </button>
+
+                <!-- 2. ติดสาย (On a call) -->
+                <button class="relative group overflow-hidden rounded-2xl p-3 bg-white border border-indigo-100 hover:border-transparent hover:shadow-[0_8px_15px_rgba(99,102,241,0.15)] transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center gap-2">
+                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-indigo-400 group-hover:to-blue-500 group-hover:text-white shadow-sm transition-all duration-300">
+                        <i class="ph-fill ph-phone-call text-xl group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <span class="relative text-xs font-bold text-slate-700 group-hover:text-indigo-700 transition-colors">ติดสาย</span>
+                </button>
+
+                <!-- 3. ไม่อยู่ (Away) -->
+                <button class="relative group overflow-hidden rounded-2xl p-3 bg-white border border-amber-100 hover:border-transparent hover:shadow-[0_8px_15px_rgba(245,158,11,0.15)] transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center gap-2">
+                    <div class="absolute inset-0 bg-gradient-to-br from-amber-50 to-orange-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-amber-400 group-hover:to-orange-500 group-hover:text-white shadow-sm transition-all duration-300">
+                        <i class="ph-fill ph-clock text-xl group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <span class="relative text-xs font-bold text-slate-700 group-hover:text-amber-700 transition-colors">ไม่อยู่</span>
+                </button>
+
+                <!-- 4. ไม่ว่าง (Busy) -->
+                <button class="relative group overflow-hidden rounded-2xl p-3 bg-white border border-rose-100 hover:border-transparent hover:shadow-[0_8px_15px_rgba(244,63,94,0.15)] transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center gap-2">
+                    <div class="absolute inset-0 bg-gradient-to-br from-rose-50 to-red-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-rose-400 group-hover:to-red-500 group-hover:text-white shadow-sm transition-all duration-300">
+                        <i class="ph-fill ph-minus-circle text-xl group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <span class="relative text-xs font-bold text-slate-700 group-hover:text-rose-700 transition-colors">ไม่ว่าง</span>
+                </button>
+
+            </div>
+        </div>
+        <!-- 🌟 สิ้นสุด 4 ปุ่มสถานะ 🌟 -->
+
     </div>
 
-    
     <!-- User Profile & Logout Bottom -->
     <div class="p-4 border-t border-gray-100">
         <div class="bg-gray-50 rounded-2xl p-4 flex items-center justify-between border border-gray-200/60">
@@ -152,14 +186,11 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <p class="text-xs text-gray-500 truncate capitalize"><?= htmlspecialchars($currentUser['role']) ?></p>
                 </div>
             </div>
-            <!-- ปุ่ม Logout (เรียกใช้ฟังก์ชันใน app.js หรือเขียน fetch ทับ) -->
+            <!-- ปุ่ม Logout -->
             <button onclick="handleLogout()" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors tooltip flex-shrink-0" title="ออกจากระบบ">
                 <i class="ph ph-sign-out text-xl"></i>
             </button>
         </div>
-    
-    
-    
     </div>
 </aside>
 
