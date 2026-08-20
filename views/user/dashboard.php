@@ -153,7 +153,7 @@ require_once __DIR__ . '/../includes/header.php';
                             <p class="text-2xl font-black text-gray-800 leading-none"><?= count($deptContacts) ?></p>
                         </div>
                         <div class="bg-gradient-to-br from-emerald-50/80 to-emerald-100/50 rounded-2xl px-5 py-3 text-center border border-emerald-200/50 shadow-sm min-w-[90px] hover:-translate-y-1 transition-transform duration-300">
-                            <p class="text-[0.65rem] text-emerald-600 font-bold uppercase tracking-wider mb-1">ออนไลน์</p>
+                            <p class="text-[0.65rem] text-emerald-600 font-bold uppercase tracking-wider mb-1">Phone Online</p>
                             <p class="text-2xl font-black text-emerald-600 leading-none"><?= $onlineCount ?></p>
                         </div>
                     </div>
