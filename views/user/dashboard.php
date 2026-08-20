@@ -32,15 +32,32 @@ $deptContacts = [];
 $onlineCount = 0;
 $offlineCount = 0;
 
+// ตัวแปรนับจำนวนสถานะการทำงาน (เพิ่มใหม่)
+$availableCount = 0;
+$onCallCount = 0;
+$awayCount = 0;
+$busyCount = 0;
+
 if ($myDeptId) {
     $deptContacts = Database::getAll(
         "SELECT * FROM contacts WHERE department_id = ? ORDER BY first_name ASC", 
         [$myDeptId]
     );
-    // นับสถิติออนไลน์
+    // นับสถิติออนไลน์ และสถานะการทำงาน
     foreach ($deptContacts as $c) {
         if ($c['status'] === 'online') $onlineCount++;
         if ($c['status'] === 'offline') $offlineCount++;
+        
+        $ws = $c['work_status'] ?? 'available';
+        if ($ws === 'on_call') {
+            $onCallCount++;
+        } elseif ($ws === 'away') {
+            $awayCount++;
+        } elseif ($ws === 'busy') {
+            $busyCount++;
+        } else {
+            $availableCount++;
+        }
     }
 }
 
@@ -143,6 +160,57 @@ require_once __DIR__ . '/../includes/header.php';
                 </div>
             </div>
 
+            
+            <!-- 🌟 สรุปสถานะคนในทีม (Wow Design) 🌟 -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+                
+                <!-- 1. ว่าง (Available) -->
+                <div class="bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-emerald-100/80 shadow-[0_8px_20px_rgb(16,185,129,0.05)] flex items-center gap-4 hover:-translate-y-1 transition-all duration-300 group">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 text-emerald-600 flex items-center justify-center text-xl shadow-sm border border-emerald-200/50 group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-check-circle"></i>
+                    </div>
+                    <div>
+                        <p class="text-[0.65rem] font-bold text-gray-500 uppercase tracking-widest mb-0.5">ว่าง</p>
+                        <p class="text-2xl font-black text-emerald-600 leading-none"><?= $availableCount ?></p>
+                    </div>
+                </div>
+
+                <!-- 2. ติดสาย (On a call) -->
+                <div class="bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-indigo-100/80 shadow-[0_8px_20px_rgb(99,102,241,0.05)] flex items-center gap-4 hover:-translate-y-1 transition-all duration-300 group">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-600 flex items-center justify-center text-xl shadow-sm border border-indigo-200/50 group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-phone-call"></i>
+                    </div>
+                    <div>
+                        <p class="text-[0.65rem] font-bold text-gray-500 uppercase tracking-widest mb-0.5">ติดสาย</p>
+                        <p class="text-2xl font-black text-indigo-600 leading-none"><?= $onCallCount ?></p>
+                    </div>
+                </div>
+
+                <!-- 3. ไม่อยู่ (Away) -->
+                <div class="bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-amber-100/80 shadow-[0_8px_20px_rgb(245,158,11,0.05)] flex items-center gap-4 hover:-translate-y-1 transition-all duration-300 group">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-50 to-amber-100 text-amber-600 flex items-center justify-center text-xl shadow-sm border border-amber-200/50 group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-clock"></i>
+                    </div>
+                    <div>
+                        <p class="text-[0.65rem] font-bold text-gray-500 uppercase tracking-widest mb-0.5">ไม่อยู่</p>
+                        <p class="text-2xl font-black text-amber-600 leading-none"><?= $awayCount ?></p>
+                    </div>
+                </div>
+
+                <!-- 4. ไม่ว่าง (Busy) -->
+                <div class="bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-rose-100/80 shadow-[0_8px_20px_rgb(244,63,94,0.05)] flex items-center gap-4 hover:-translate-y-1 transition-all duration-300 group">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-rose-50 to-rose-100 text-rose-600 flex items-center justify-center text-xl shadow-sm border border-rose-200/50 group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-minus-circle"></i>
+                    </div>
+                    <div>
+                        <p class="text-[0.65rem] font-bold text-gray-500 uppercase tracking-widest mb-0.5">ไม่ว่าง</p>
+                        <p class="text-2xl font-black text-rose-600 leading-none"><?= $busyCount ?></p>
+                    </div>
+                </div>
+
+            </div>
+            <!-- 🌟 สิ้นสุดสรุปสถานะ 🌟 -->
+            
             <!-- Team Members Grid Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-4">
                 <?php foreach ($deptContacts as $contact): ?>
