@@ -34,6 +34,44 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
         <div class="flex items-center gap-3">
            
+            <!-- 🌟 ปุ่มดูแดชบอร์ดแผนกอื่น (Wow & Luxury Design) 🌟 -->
+            <div class="relative group">
+                <button class="animate-shine relative inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_8px_25px_rgba(168,85,247,0.4)]">
+                    <!-- พื้นหลัง Gradient สีม่วง-ชมพู หรูหรา -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-gradient-xy"></div>
+                    
+                    <!-- เนื้อหาปุ่ม -->
+                    <span class="relative z-10 flex items-center gap-2 drop-shadow-md">
+                        <i class="ph-fill ph-magic-wand text-xl animate-pulse text-yellow-300"></i>
+                        ดูแดชบอร์ดแผนกอื่น
+                        <i class="ph ph-caret-down text-sm ml-0.5 transition-transform duration-300 group-hover:rotate-180"></i>
+                    </span>
+                </button>
+
+                <!-- 🌟 Dropdown Menu แผนกต่างๆ 🌟 -->
+                <div class="absolute right-0 mt-3 w-64 bg-white/80 backdrop-blur-2xl rounded-2xl shadow-[0_15px_50px_rgba(0,0,0,0.15)] border border-white/60 opacity-0 invisible translate-y-3 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50 overflow-hidden before:absolute before:-top-2 before:right-6 before:w-4 before:h-4 before:bg-white/80 before:rotate-45 before:backdrop-blur-2xl before:border-l before:border-t before:border-white/60">
+                    <div class="p-2 max-h-[60vh] overflow-y-auto custom-scrollbar relative z-10">
+                        <p class="text-[0.65rem] font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 px-3 py-2 uppercase tracking-widest">
+                            เลือกแผนกที่ต้องการ
+                        </p>
+                        
+                        <?php foreach ($departments as $dept): ?>
+                            <a href="<?= BASE_URL ?>views/user/dashboard.php?dept_id=<?= $dept['id'] ?>" 
+                               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 hover:text-indigo-700 transition-all group/item">
+                                <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center group-hover/item:bg-white group-hover/item:shadow-md group-hover/item:text-indigo-600 transition-all duration-300">
+                                    <i class="ph-fill ph-buildings text-lg"></i>
+                                </div>
+                                <?= htmlspecialchars($dept['name']) ?>
+                            </a>
+                        <?php endforeach; ?>
+                        
+                    </div>
+                </div>
+            </div>
+            <!-- 🌟 สิ้นสุดปุ่มแดชบอร์ดแผนกอื่น 🌟 -->
+
+            <!-- 🌟 ปุ่มแก้ไขโปรไฟล์ของฉัน (ของเดิม) -->
+            <button onclick="openMyProfileModal()" ...>
         
         
         

@@ -23,7 +23,8 @@ $myProfile = Database::getRow(
     [$fullName]
 );
 
-$myDeptId = $myProfile ? $myProfile['department_id'] : null;
+// แก้เป็น: (รับค่า dept_id จากปุ่มที่กดมา ถ้าไม่มีให้ใช้แผนกตัวเอง)
+$myDeptId = isset($_GET['dept_id']) ? (int)$_GET['dept_id'] : ($myProfile ? $myProfile['department_id'] : null);
 $myDeptName = ($myProfile && $myProfile['dept_name']) ? $myProfile['dept_name'] : 'ยังไม่ระบุแผนก';
 $myDeptColor = ($myProfile && $myProfile['color_code']) ? $myProfile['color_code'] : '#94a3b8';
 
