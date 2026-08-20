@@ -149,17 +149,27 @@ require_once __DIR__ . '/../includes/header.php';
                     <!-- Glass Card for Contact -->
                     <div class="premium-glass rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-white/60 group relative cursor-pointer">
                         
-                        <!-- Status Dot -->
-                        <div class="absolute top-5 right-5">
-                            <?php if ($contact['status'] === 'online'): ?>
-                                <span class="flex h-3 w-3 relative" title="Online">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                                </span>
-                            <?php else: ?>
-                                <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-400 shadow-sm" title="Offline"></span>
-                            <?php endif; ?>
+                        <!-- 🌟 Status Badge (อิงตามสถานะการทำงาน) 🌟 -->
+                        <div class="absolute top-4 right-4 z-10">
+                            <?php 
+                                $wStatus = $contact['work_status'] ?? 'available';
+                                switch($wStatus) {
+                                    case 'on_call':
+                                        echo '<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-sm"><i class="ph-fill ph-phone-call mr-1.5 text-sm"></i> ติดสาย</span>';
+                                        break;
+                                    case 'away':
+                                        echo '<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider bg-amber-50 text-amber-600 border border-amber-100 shadow-sm"><i class="ph-fill ph-clock mr-1.5 text-sm"></i> ไม่อยู่</span>';
+                                        break;
+                                    case 'busy':
+                                        echo '<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider bg-rose-50 text-rose-600 border border-rose-100 shadow-sm"><i class="ph-fill ph-minus-circle mr-1.5 text-sm"></i> ไม่ว่าง</span>';
+                                        break;
+                                    default:
+                                        echo '<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm"><i class="ph-fill ph-check-circle mr-1.5 text-sm"></i> ว่าง</span>';
+                                        break;
+                                }
+                            ?>
                         </div>
+                        <!-- 🌟 สิ้นสุด Status Badge 🌟 -->
 
                         <!-- Avatar -->
                         <div class="flex flex-col items-center text-center">
