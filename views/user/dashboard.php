@@ -271,7 +271,7 @@ require_once __DIR__ . '/../includes/header.php';
                                 <span class="font-mono font-semibold text-gray-800"><?= htmlspecialchars($contact['mobile_number'] ?: '-') ?></span>
                             </div>
                             <div class="flex items-center justify-between text-sm">
-                                <span class="text-gray-500 flex items-center gap-2"><i class="ph ph-laptop text-lg"></i> IP Address</span>
+                                <span class="text-gray-500 flex items-center gap-2"><i class="ph ph-laptop text-lg"></i> IP</span>
                                 <span class="font-mono text-indigo-600 font-semibold bg-white/50 px-2 py-0.5 rounded-md border border-indigo-100/50">
                                     <?= htmlspecialchars($contact['ip_address'] ?: '-') ?>
                                 </span>
