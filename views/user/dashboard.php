@@ -270,6 +270,27 @@ require_once __DIR__ . '/../includes/header.php';
                                 <span class="text-gray-500 flex items-center gap-2"><i class="ph ph-device-mobile text-lg"></i> มือถือ</span>
                                 <span class="font-mono font-semibold text-gray-800"><?= htmlspecialchars($contact['mobile_number'] ?: '-') ?></span>
                             </div>
+                            
+                            
+                            <div class="flex items-center justify-between text-sm gap-2">
+                                <span class="text-gray-500 flex items-center gap-2 whitespace-nowrap">
+                                    <i class="ph ph-envelope-simple text-lg"></i> อีเมล
+                                </span>
+                                <span class="text-xs text-gray-700 font-medium truncate" title="<?= htmlspecialchars($contact['email'] ?: '') ?>">
+                                    <?= htmlspecialchars($contact['email'] ?: '-') ?>
+                                </span>
+                            </div>
+
+                            <!-- 🌟 เพิ่มใหม่: รุ่นโทรศัพท์ -->
+                            <div class="flex items-center justify-between text-sm gap-2">
+                                <span class="text-gray-500 flex items-center gap-2 whitespace-nowrap">
+                                    <i class="ph ph-device-mobile-camera text-lg"></i> รุ่นโทรศัพท์
+                                </span>
+                                <span class="text-xs text-gray-700 font-medium truncate">
+                                    <?= htmlspecialchars($contact['phone_model'] ?: '-') ?>
+                                </span>
+                            </div>
+                            
                             <div class="flex items-center justify-between text-sm">
                                 <span class="text-gray-500 flex items-center gap-2"><i class="ph ph-laptop text-lg"></i> IP</span>
                                 <span class="font-mono text-indigo-600 font-semibold bg-white/50 px-2 py-0.5 rounded-md border border-indigo-100/50">
