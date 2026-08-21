@@ -246,6 +246,35 @@ require_once __DIR__ . '/../includes/header.php';
                     </div>
                 </div>
 
+<!-- 🌟 เพิ่มใหม่: Email และ รุ่นโทรศัพท์ 🌟 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- อีเมล -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">อีเมล (E-mail)</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                <i class="ph ph-envelope-simple"></i>
+                            </div>
+                            <input type="email" id="my_profile_email" name="email" 
+                                   class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none" 
+                                   placeholder="example@company.com">
+                        </div>
+                    </div>
+                    <!-- รุ่นโทรศัพท์ -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">รุ่นโทรศัพท์ (Phone Model)</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                <i class="ph ph-device-mobile-camera"></i>
+                            </div>
+                            <input type="text" id="my_profile_phone_model" name="phone_model" 
+                                   class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none" 
+                                   placeholder="เช่น iPhone 15, Galaxy S24">
+                        </div>
+                    </div>
+                </div>
+                <!-- 🌟 สิ้นสุดส่วนที่เพิ่มใหม่ 🌟 -->
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">IP Address ประจำเครื่อง</label>
                     <div class="relative">
@@ -384,6 +413,8 @@ require_once __DIR__ . '/../includes/header.php';
                     document.getElementById('my_profile_ext').value = data.extension || '';
                     document.getElementById('my_profile_mobile').value = data.mobile_number || '';
                     document.getElementById('my_profile_ip').value = data.ip_address || '';
+                    document.getElementById('my_profile_email').value = data.email || '';
+                    document.getElementById('my_profile_phone_model').value = data.phone_model || '';
 
                     // เพิ่มบรรทัดนี้: โหลดรูปโปรไฟล์เดิมมาแสดง ถ้าไม่มีให้ใช้รูป Default
 const avatarPreview = document.getElementById('my_profile_avatar_preview');
