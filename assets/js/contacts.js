@@ -105,7 +105,7 @@ async function loadContacts() {
  * ฟังก์ชันนำข้อมูล JSON มาสร้างเป็น HTML Table Rows
  */
 function renderTable(contacts) {
-    const els = getElements(); // แก้ไขดึงค่า elements มาใช้
+    const els = getElements();
     if (contacts.length === 0) {
         els.tableBody.innerHTML = `
             <tr>
@@ -120,25 +120,52 @@ function renderTable(contacts) {
 
     let html = '';
     contacts.forEach(contact => {
-        // จัดการสีและข้อความของสถานะ (Online/Offline/Unknown)
-        let statusBadge = '';
-        let dotClass = 'unknown';
-        
+        // --- 🌟 เริ่มต้นส่วนคำนวณสถานะอุปกรณ์และวัน Offline 🌟 ---
+        let deviceStatusHtml = '';
+
         if (contact.status === 'online') {
-            dotClass = 'online';
-            statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-50 text-green-700 text-xs font-medium border border-green-200">
-                            <span class="status-dot online"></span> Online
-                           </span>`;
+            deviceStatusHtml = `
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online
+                </span>
+            `;
         } else if (contact.status === 'offline') {
-            dotClass = 'offline';
-            statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 text-red-700 text-xs font-medium border border-red-200">
-                            <span class="status-dot offline"></span> Offline
-                           </span>`;
+            // คำนวณจำนวนวันที่ออฟไลน์
+            let offlineDaysText = '';
+            if (contact.last_online && contact.last_online !== '0000-00-00 00:00:00') {
+                const lastOnlineDate = new Date(contact.last_online);
+                const today = new Date();
+                
+                // หาความต่างของเวลาเป็นมิลลิวินาที แล้วแปลงเป็นวัน
+                const diffTime = Math.abs(today - lastOnlineDate);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays > 0) {
+                    offlineDaysText = `<div class="text-[0.65rem] text-rose-500 font-medium mt-1">ไม่ออนไลน์ ${diffDays} วัน</div>`;
+                } else {
+                    // กรณียังไม่ถึง 1 วัน
+                    offlineDaysText = `<div class="text-[0.65rem] text-rose-400 font-medium mt-1">ออฟไลน์วันนี้</div>`;
+                }
+            } else {
+                offlineDaysText = `<div class="text-[0.65rem] text-gray-400 font-medium mt-1">ไม่เคยออนไลน์</div>`;
+            }
+
+            deviceStatusHtml = `
+                <div class="flex flex-col items-center justify-center">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 text-rose-600 border border-rose-100 shadow-sm">
+                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Offline
+                    </span>
+                    ${offlineDaysText}
+                </div>
+            `;
         } else {
-            statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-50 text-gray-700 text-xs font-medium border border-gray-200">
-                            <span class="status-dot unknown"></span> Unknown
-                           </span>`;
+            deviceStatusHtml = `
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 shadow-sm">
+                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Unknown
+                </span>
+            `;
         }
+        // --- 🌟 สิ้นสุดส่วนคำนวณสถานะอุปกรณ์ 🌟 ---
 
         // จัดการแผนก (Department)
         const deptColor = contact.department_color || '#94a3b8';
@@ -146,6 +173,7 @@ function renderTable(contacts) {
             ? `<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background-color: ${deptColor}"></span>${contact.department_name}</div>`
             : '<span class="text-gray-400">-</span>';
 
+        // นำตัวแปร deviceStatusHtml มาใช้งานตรง td ที่ id="status-cell-${contact.id}"
         html += `
             <tr class="hover:bg-slate-50 transition-colors group">
                 <td class="font-medium text-gray-900">
@@ -163,7 +191,7 @@ function renderTable(contacts) {
                     </div>
                 </td>
 
-                <!-- 🌟 ส่วนที่เพิ่มใหม่: คอลัมน์สถานะ User แบบ Dynamic 🌟 -->
+                <!-- สถานะ User -->
                 <td class="text-center">
                     ${(function() {
                         switch(contact.work_status) {
@@ -178,13 +206,16 @@ function renderTable(contacts) {
                         }
                     })()}
                 </td>
-                <!-- 🌟 สิ้นสุดส่วนที่เพิ่มใหม่ 🌟 -->
 
-                <!-- 2. นี่คือคอลัมน์แผนก (ของเดิม) ที่จะถูกดันไปอยู่ถัดไป -->
                 <td>${deptHtml}</td>
                 <td class="font-mono text-gray-600">${contact.extension || '-'}</td>
                 <td class="font-mono text-blue-600" id="ip-cell-${contact.id}">${contact.ip_address || '-'}</td>
-                <td id="status-cell-${contact.id}">${statusBadge}</td>
+                
+                <!-- 🌟 ตรงนี้คือคอลัมน์อุปกรณ์ ที่ถูกแทนที่ด้วยตัวแปร deviceStatusHtml 🌟 -->
+                <td id="status-cell-${contact.id}" class="text-center">
+                    ${deviceStatusHtml}
+                </td>
+                
                 <td>
                     <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button onclick="pingSingleIp(${contact.id}, '${contact.ip_address}')" class="p-1.5 text-blue-500 hover:bg-blue-50 rounded-lg tooltip" title="ตรวจสอบสถานะ (Ping)">
@@ -204,7 +235,6 @@ function renderTable(contacts) {
 
     els.tableBody.innerHTML = html;
 }
-
 /**
  * ฟังก์ชันจัดการปุ่มเปลี่ยนหน้า (Pagination)
  */
