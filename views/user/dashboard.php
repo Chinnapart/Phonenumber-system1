@@ -342,63 +342,75 @@ require_once __DIR__ . '/../includes/header.php';
             
             <div class="space-y-5 bg-slate-50 p-5 rounded-2xl border border-slate-100">
                 <!-- เบอร์ต่อ -->
-                <div class="flex items-start gap-3.5">
-                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm flex-shrink-0">
+                <div class="flex items-start gap-3.5 group cursor-pointer" onclick="copyText(document.getElementById('modalExt').innerText)" title="คลิกเพื่อคัดลอก">
+                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-slate-500 group-hover:text-brand-500 group-hover:bg-brand-50 shadow-sm flex-shrink-0 transition-colors">
                         <i class="ph ph-phone text-xl"></i>
                     </div>
-                    <div class="pt-1">
+                    <div class="pt-1 w-full overflow-hidden">
                         <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-0.5">เบอร์ต่อ (Extension)</p>
-                        <p class="text-sm font-mono font-bold text-slate-700" id="modalExt">-</p>
+                        <div class="flex items-center gap-2">
+                            <p class="text-sm font-mono font-bold text-slate-700 group-hover:text-brand-600 transition-colors" id="modalExt">-</p>
+                            <i class="ph ph-copy text-brand-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
                     </div>
                 </div>
 
                 <!-- มือถือ -->
-                <div class="flex items-start gap-3.5">
-                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm flex-shrink-0">
+                <div class="flex items-start gap-3.5 group cursor-pointer" onclick="copyText(document.getElementById('modalMobile').innerText)" title="คลิกเพื่อคัดลอก">
+                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-slate-500 group-hover:text-brand-500 group-hover:bg-brand-50 shadow-sm flex-shrink-0 transition-colors">
                         <i class="ph ph-device-mobile text-xl"></i>
                     </div>
-                    <div class="pt-1">
+                    <div class="pt-1 w-full overflow-hidden">
                         <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-0.5">มือถือ (Mobile)</p>
-                        <p class="text-sm font-mono font-bold text-slate-700" id="modalMobile">-</p>
+                        <div class="flex items-center gap-2">
+                            <p class="text-sm font-mono font-bold text-slate-700 group-hover:text-brand-600 transition-colors" id="modalMobile">-</p>
+                            <i class="ph ph-copy text-brand-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
                     </div>
                 </div>
 
                 <!-- อีเมล (ใช้ break-all ป้องกันข้อความล้น) -->
-                <div class="flex items-start gap-3.5">
-                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm flex-shrink-0">
+                <div class="flex items-start gap-3.5 group cursor-pointer" onclick="copyText(document.getElementById('modalEmail').innerText)" title="คลิกเพื่อคัดลอก">
+                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-slate-500 group-hover:text-brand-500 group-hover:bg-brand-50 shadow-sm flex-shrink-0 transition-colors">
                         <i class="ph ph-envelope-simple text-xl"></i>
                     </div>
                     <div class="pt-1 w-full overflow-hidden">
                         <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-0.5">อีเมล (E-mail)</p>
-                        <p class="text-sm font-medium text-slate-700 break-all" id="modalEmail">-</p>
+                        <div class="flex items-center gap-2">
+                            <p class="text-sm font-medium text-slate-700 break-all group-hover:text-brand-600 transition-colors" id="modalEmail">-</p>
+                            <i class="ph ph-copy text-brand-500 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"></i>
+                        </div>
                     </div>
                 </div>
 
                 <!-- รุ่นโทรศัพท์ -->
-                <div class="flex items-start gap-3.5">
-                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm flex-shrink-0">
+                <div class="flex items-start gap-3.5 group cursor-pointer" onclick="copyText(document.getElementById('modalPhoneModel').innerText)" title="คลิกเพื่อคัดลอก">
+                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-slate-500 group-hover:text-brand-500 group-hover:bg-brand-50 shadow-sm flex-shrink-0 transition-colors">
                         <i class="ph ph-device-mobile-camera text-xl"></i>
                     </div>
                     <div class="pt-1 w-full overflow-hidden">
                         <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-0.5">รุ่นโทรศัพท์ (Phone Model)</p>
-                        <p class="text-sm font-medium text-slate-700 break-words" id="modalPhoneModel">-</p>
+                        <div class="flex items-center gap-2">
+                            <p class="text-sm font-medium text-slate-700 break-words group-hover:text-brand-600 transition-colors" id="modalPhoneModel">-</p>
+                            <i class="ph ph-copy text-brand-500 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"></i>
+                        </div>
                     </div>
                 </div>
 
                 <!-- IP Address -->
-                <div class="flex items-start gap-3.5">
-                    <div class="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500 shadow-sm flex-shrink-0">
+                <div class="flex items-start gap-3.5 group cursor-pointer" onclick="copyText(document.getElementById('modalIp').innerText)" title="คลิกเพื่อคัดลอก">
+                    <div class="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500 group-hover:text-brand-500 group-hover:bg-brand-50 shadow-sm flex-shrink-0 transition-colors">
                         <i class="ph ph-laptop text-xl"></i>
                     </div>
-                    <div class="pt-1">
+                    <div class="pt-1 w-full overflow-hidden">
                         <p class="text-[0.65rem] font-bold text-indigo-400 uppercase tracking-wider mb-0.5">IP Address</p>
-                        <p class="text-sm font-mono font-bold text-indigo-600" id="modalIp">-</p>
+                        <div class="flex items-center gap-2">
+                            <p class="text-sm font-mono font-bold text-indigo-600 group-hover:text-brand-600 transition-colors" id="modalIp">-</p>
+                            <i class="ph ph-copy text-brand-500 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
     
     
     
@@ -498,6 +510,22 @@ require_once __DIR__ . '/../includes/header.php';
             }, 300);
         }
     
+// ---------------------------------------------
+        // ฟังก์ชันสำหรับคัดลอกข้อความ (Copy to Clipboard)
+        // ---------------------------------------------
+        function copyText(text) {
+            if (!text || text.trim() === '-' || text.trim() === '') {
+                showToast('ไม่มีข้อมูลให้คัดลอก', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('คัดลอกสำเร็จ: ' + text, 'success');
+            }).catch(err => {
+                showToast('ไม่สามารถคัดลอกได้ โปรดลองอีกครั้ง', 'error');
+            });
+        }
+
     </script>
 </body>
 </html>
