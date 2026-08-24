@@ -73,12 +73,14 @@ if (Auth::isLoggedIn()) {
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4 lg:p-8">
 
     <!-- Main Card Container -->
-    <div class="w-full max-w-6xl bg-white rounded-3xl shadow-2xl flex flex-col lg:flex-row overflow-hidden min-h-[600px]">
+    <!-- 🌟 แก้ไข: เพิ่ม lg:h-[600px] max-h-[95vh] เพื่อจำกัดความสูงไม่ให้ล้นจอ 🌟 -->
+    <div class="w-full max-w-6xl bg-white rounded-3xl shadow-2xl flex flex-col lg:flex-row overflow-hidden lg:h-[600px] max-h-[95vh]">
         
         <!-- ========================================== -->
         <!-- Left Side: Brand & Marketing (Gradient)    -->
         <!-- ========================================== -->
-        <div class="bg-gradient-split w-full lg:w-5/12 p-10 lg:p-14 text-white flex flex-col justify-between relative overflow-hidden hidden md:flex">
+        <!-- 🌟 แก้ไข: ลด padding จาก p-14 เป็น p-12 🌟 -->
+        <div class="bg-gradient-split w-full lg:w-5/12 p-8 lg:p-12 text-white flex flex-col justify-between relative overflow-hidden hidden md:flex">
             
             <!-- ของตกแต่งพื้นหลัง (วงกลมโปร่งแสงด้านขวาบน) -->
             <div class="absolute top-12 right-12 w-32 h-32 bg-white/10 backdrop-blur-xl rounded-3xl rotate-12 border border-white/20"></div>
@@ -134,7 +136,8 @@ if (Auth::isLoggedIn()) {
         <!-- ========================================== -->
         <!-- Right Side: Login Form                     -->
         <!-- ========================================== -->
-        <div class="w-full lg:w-7/12 p-8 lg:p-20 flex flex-col justify-center bg-white relative">
+        <!-- 🌟 แก้ไข: ลด padding และเพิ่ม overflow-y-auto เพื่อให้ scroll ได้ถ้าจอเล็กมาก 🌟 -->
+        <div class="w-full lg:w-7/12 p-8 lg:px-16 lg:py-10 flex flex-col justify-center bg-white relative overflow-y-auto">
             
             <div class="max-w-md w-full mx-auto">
                 
@@ -144,7 +147,8 @@ if (Auth::isLoggedIn()) {
                     <h1 class="text-2xl font-bold">ConnectPro</h1>
                 </div>
 
-                <div class="mb-10">
+                <!-- 🌟 แก้ไข: ลด margin bottom จาก 10 เป็น 8 🌟 -->
+                <div class="mb-8">
                     <p class="text-brand-600 font-semibold text-sm tracking-widest uppercase mb-2">Welcome Back</p>
                     <h2 class="text-3xl font-bold text-gray-900 mb-2">เข้าสู่ระบบ</h2>
                     <p class="text-gray-500 text-sm">กรอกบัญชีผู้ใช้งานองค์กรเพื่อเข้าสู่ ConnectPro</p>
@@ -156,7 +160,8 @@ if (Auth::isLoggedIn()) {
                     <p id="alertMessage" class="text-red-700 text-sm font-medium"></p>
                 </div>
 
-                <form id="loginForm" class="space-y-6">
+                <!-- 🌟 แก้ไข: ลดระยะห่างช่องกรอกข้อมูลจาก space-y-6 เป็น space-y-5 🌟 -->
+                <form id="loginForm" class="space-y-5">
                     
                     <!-- Username Input -->
                     <div>
@@ -214,18 +219,18 @@ if (Auth::isLoggedIn()) {
                 </form>
 
                 <!-- Security Info -->
-                <div class="mt-8 flex items-start gap-3 p-4 bg-blue-50/50 rounded-xl border border-blue-100/50">
+                <!-- 🌟 แก้ไข: เปลี่ยน mt-8 เป็น mt-6 🌟 -->
+                <div class="mt-6 flex items-start gap-3 p-4 bg-blue-50/50 rounded-xl border border-blue-100/50">
                     <i class="ph-fill ph-shield-check text-brand-500 text-xl mt-0.5"></i>
                     <p class="text-xs text-gray-500 leading-relaxed">
                         ระบบนี้สำหรับบุคลากรภายในองค์กรเท่านั้น การเข้าสู่ระบบและการใช้งานอาจถูกบันทึกเพื่อความปลอดภัย
                     </p>
                 </div>
                 
-                <div class="mt-8 text-center">
+                <!-- 🌟 แก้ไข: เปลี่ยน mt-8 เป็น mt-6 🌟 -->
+                <div class="mt-6 text-center">
                     <p class="text-xs text-gray-400">หากไม่สามารถเข้าสู่ระบบได้ กรุณาติดต่อ IT Support</p>
                 </div>
-
-            </div>
         </div>
     </div>
 

@@ -103,7 +103,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <th class="text-center w-1/6">แผนก</th>
                         <th class="text-center w-1/6">เบอร์</th>
                         <th class="text-center w-1/6">IP</th>
-                        <th class="text-center w-1/6">สถานะ</th>
+                        <th class="text-center w-1/6">อุปกรณ์</th>
                         <th class="text-center w-32">จัดการ</th> 
                     </tr>
                 </thead>
