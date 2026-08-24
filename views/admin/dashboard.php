@@ -222,22 +222,50 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
 
         <!-- Quick Access / Placeholder -->
-        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-center items-center text-center relative overflow-hidden">
-            <!-- Background Graphic -->
-            <div class="absolute inset-0 bg-slate-50/50"></div>
+        <!-- 🌟 Premium Quick Access Card (Luxurious Design) -->
+        <div class="lg:col-span-2 relative bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-8 lg:p-12 flex flex-col justify-center items-center text-center overflow-hidden group">
             
-            <div class="relative z-10 max-w-md">
-                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="ph ph-address-book text-3xl"></i>
+            <!-- ❇️ Luxury Glow Effects (แสงเรืองแสงพื้นหลัง) -->
+            <div class="absolute -top-32 -right-32 w-72 h-72 bg-gradient-to-br from-brand-400 to-indigo-500 rounded-full blur-3xl opacity-10 group-hover:opacity-30 transition-opacity duration-700 pointer-events-none"></div>
+            <div class="absolute -bottom-32 -left-32 w-72 h-72 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full blur-3xl opacity-10 group-hover:opacity-30 transition-opacity duration-700 pointer-events-none"></div>
+
+            <!-- ❇️ Abstract Decorative Patterns (ลายจุด Pattern แบบพรีเมียม) -->
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiLz48L3N2Zz4=')] [mask-image:linear-gradient(to_bottom,white,transparent)] pointer-events-none"></div>
+
+            <div class="relative z-10 max-w-lg flex flex-col items-center">
+                
+                <!-- 🌟 3D Glass Icon Container -->
+                <div class="relative mb-8">
+                    <!-- Outer glow -->
+                    <div class="absolute inset-0 bg-brand-400 rounded-2xl blur-xl opacity-30 group-hover:opacity-60 transition-opacity duration-500"></div>
+                    <!-- Glass Box -->
+                    <div class="relative w-20 h-20 bg-white/80 backdrop-blur-xl border border-white shadow-xl rounded-2xl flex items-center justify-center transform group-hover:-translate-y-2 group-hover:scale-105 transition-all duration-500">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white shadow-inner">
+                            <i class="ph ph-address-book text-3xl"></i>
+                        </div>
+                    </div>
                 </div>
-                <h3 class="text-lg font-bold text-gray-900 mb-2">จัดการสมุดรายชื่อ</h3>
-                <p class="text-sm text-gray-500 mb-6 leading-relaxed">
-                    เพิ่ม แก้ไข หรือลบข้อมูลเบอร์โทรศัพท์และ IP Address ของพนักงานในองค์กรได้ผ่านระบบจัดการ
+
+                <!-- 🌟 Typography -->
+                <h3 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-indigo-900 tracking-tight mb-4">
+                    จัดการสมุดรายชื่อ
+                </h3>
+                <p class="text-base text-slate-500 mb-10 leading-relaxed max-w-md mx-auto">
+                    ยกระดับการบริหารจัดการข้อมูลบุคลากร เพิ่ม แก้ไข หรือลบข้อมูลเบอร์โทรศัพท์และ IP Address ภายในองค์กรได้อย่างรวดเร็วและปลอดภัย
                 </p>
-                <a href="<?= BASE_URL ?>views/admin/contacts_manage.php" class="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-medium px-6 py-2.5 rounded-xl shadow-lg shadow-brand-500/30 transition-all duration-200 hover:-translate-y-0.5">
-                    เปิดสมุดรายชื่อ
-                    <i class="ph ph-arrow-right font-bold"></i>
+
+                <!-- 🌟 Premium Action Button -->
+                <a href="<?= BASE_URL ?>views/admin/contacts_manage.php" 
+                   class="relative inline-flex items-center gap-4 bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white font-semibold px-8 py-3.5 rounded-2xl shadow-[0_10px_25px_rgba(15,23,42,0.25)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_15px_35px_rgba(15,23,42,0.35)] group/btn">
+                    
+                    <span class="text-base tracking-wide">เข้าสู่ระบบจัดการข้อมูล</span>
+                    
+                    <!-- Icon circle inside button -->
+                    <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover/btn:translate-x-1 group-hover/btn:bg-white group-hover/btn:text-slate-900 transition-all duration-300 border border-white/5">
+                        <i class="ph ph-arrow-right text-lg font-bold"></i>
+                    </div>
                 </a>
+                
             </div>
         </div>
         
