@@ -61,8 +61,18 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     จัดการผู้ใช้งาน (Users)
                 </a>
             </li>
+        <li>
+                <a href="<?= BASE_URL ?>views/admin/departments_manage.php" 
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= $currentPage === 'departments_manage.php' ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' ?>">
+                    <i class="ph <?= $currentPage === 'departments_manage.php' ? 'ph-buildings text-blue-600' : 'ph-buildings' ?> text-xl"></i>
+                    จัดการแผนก (Departments)
+                </a>
+            </li>
+        
         </ul>
 
+
+        
         <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">ระบบ</p>
         <ul class="space-y-1">
             <li>
