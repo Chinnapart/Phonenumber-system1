@@ -12,6 +12,40 @@ require_once __DIR__ . '/../../core/Database.php';
 // 2. บังคับว่าต้องเป็น Admin เท่านั้น
 Auth::requireAdmin();
 
+// 🌟 เพิ่มใหม่: ดึงข้อมูลจริงจาก Database สำหรับกราฟ 7 วันย้อนหลัง
+$trendLabels = [];
+$trendOnline = [];
+$trendOffline = [];
+$daysTh = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+
+for ($i = 6; $i >= 0; $i--) {
+    $targetDate = date('Y-m-d', strtotime("-$i days"));
+    $dayOfWeek = date('w', strtotime($targetDate));
+    
+    $trendLabels[] = $daysTh[$dayOfWeek]; // ใส่ชื่อวันภาษาไทย
+    
+    if ($i === 0) {
+        // 1. สำหรับ "วันปัจจุบัน" (แท่งขวาสุด) 
+        // ให้นับยอดรวมสถานะทั้งหมดที่มีอยู่จริง ณ ตอนนี้ เพื่อให้ตรงกับตัวเลขสถิติด้านบน
+        $onData = Database::getRow("SELECT COUNT(id) as total FROM contacts WHERE status = 'online'");
+        $trendOnline[] = $onData ? (int)$onData['total'] : 0;
+        
+        $offData = Database::getRow("SELECT COUNT(id) as total FROM contacts WHERE status = 'offline'");
+        $trendOffline[] = $offData ? (int)$offData['total'] : 0;
+    } else {
+        // 2. สำหรับ "วันย้อนหลัง" (6 วันก่อนหน้า)
+        // เนื่องจากระบบยังไม่มีตารางเก็บประวัติรายวัน (History Log) จึงให้แสดงค่าเป็น 0 ตามความจริง 
+        $trendOnline[] = 0;
+        $trendOffline[] = 0;
+    }
+}
+
+// แปลงเป็น JSON เพื่อส่งให้ Javascript
+$jsLabels = json_encode($trendLabels, JSON_UNESCAPED_UNICODE);
+$jsOnline = json_encode($trendOnline);
+$jsOffline = json_encode($trendOffline);
+// 🌟 สิ้นสุดส่วนที่เพิ่มใหม่
+
 // 3. กำหนดชื่อหน้า และเรียกใช้ Header
 $pageTitle = 'แดชบอร์ด (Overview)';
 require_once __DIR__ . '/../includes/header.php';
@@ -322,10 +356,10 @@ require_once __DIR__ . '/../includes/header.php';
             gradientOffline.addColorStop(0, 'rgba(244, 63, 94, 1)'); // Rose (สีสดด้านบน)
             gradientOffline.addColorStop(1, 'rgba(244, 63, 94, 0.2)'); // อ่อนลงด้านล่าง
 
-            // 💡 ข้อมูลจำลอง (Mock Data)
-            const daysLabel = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
-            const onlineData = [8, 9, 10, 9, 11, 10, 11];
-            const offlineData = [3, 2, 1, 2, 0, 1, 0];
+            // 💡 ข้อมูลจริงจาก Database
+            const daysLabel = <?= $jsLabels ?>;
+            const onlineData = <?= $jsOnline ?>;
+            const offlineData = <?= $jsOffline ?>;
 
             // 🌟 Custom Plugin สำหรับวาดตัวเลขบนแท่งกราฟโดยไม่ต้อง Hover
             const alwaysShowDataLabels = {
