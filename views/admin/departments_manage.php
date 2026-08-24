@@ -184,8 +184,6 @@ require_once __DIR__ . '/../includes/header.php';
 
             const search = document.getElementById('searchDeptInput') ? document.getElementById('searchDeptInput').value.trim() : '';
             
-            // หมายเหตุ: คุณจะต้องสร้าง API สำหรับดึงข้อมูลแผนก (api/departments/read.php) ด้วยนะครับ
-            // โค้ดส่วนนี้เป็นการจำลองการส่งรีเควสต์ 
             try {
                 const queryParams = new URLSearchParams({ search: search, page: currentDeptPage, limit: deptLimit });
                 const response = await apiCall(`api/departments/read.php?${queryParams.toString()}`);
@@ -195,7 +193,7 @@ require_once __DIR__ . '/../includes/header.php';
                     renderDeptPagination(response.pagination);
                 }
             } catch (error) {
-                tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-red-500"><i class="ph-fill ph-warning-circle text-2xl mb-2"></i><br>โปรดตรวจสอบให้แน่ใจว่าได้สร้าง API สำหรับจัดการแผนกแล้ว</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-red-500"><i class="ph-fill ph-warning-circle text-2xl mb-2"></i><br>เกิดข้อผิดพลาดในการดึงข้อมูล: ${error.message}</td></tr>`;
             }
         }
 
@@ -237,9 +235,41 @@ require_once __DIR__ . '/../includes/header.php';
         }
 
         function renderDeptPagination(pageData) {
-            // โค้ดสำหรับแสดงปุ่มเปลี่ยนหน้า (คล้ายกับของ user)
-            // ...
+            const container = document.getElementById('deptPaginationContainer');
+            const info = document.getElementById('deptPageInfo');
+            if (!container) return;
+
+            const totalPages = pageData.total_pages;
+            const curr = pageData.current_page;
+            
+            if (info) {
+                info.innerText = `หน้า ${curr} จาก ${totalPages} (รวม ${pageData.total_records} รายการ)`;
+            }
+
+            let html = '';
+            
+            html += `<button onclick="changeDeptPage(${curr - 1})" class="px-3 py-1 rounded border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed" ${curr <= 1 ? 'disabled' : ''}><i class="ph ph-caret-left"></i></button>`;
+
+            let startPage = Math.max(1, curr - 2);
+            let endPage = Math.min(totalPages, curr + 2);
+
+            for (let i = startPage; i <= endPage; i++) {
+                if (i === curr) {
+                    html += `<button class="px-3 py-1 rounded border border-blue-500 bg-blue-50 text-blue-700 font-medium">${i}</button>`;
+                } else {
+                    html += `<button onclick="changeDeptPage(${i})" class="px-3 py-1 rounded border border-gray-200 bg-white hover:bg-gray-50 text-gray-600">${i}</button>`;
+                }
+            }
+
+            html += `<button onclick="changeDeptPage(${curr + 1})" class="px-3 py-1 rounded border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed" ${curr >= totalPages ? 'disabled' : ''}><i class="ph ph-caret-right"></i></button>`;
+
+            container.innerHTML = html;
         }
+
+        window.changeDeptPage = function(newPage) {
+            currentDeptPage = newPage;
+            loadDepartments();
+        };
 
         // เปิด Modal เพิ่ม
         function openDeptModal() {
@@ -291,18 +321,54 @@ require_once __DIR__ . '/../includes/header.php';
             }
         }
 
-        // จัดการ Form Submit (ต้องการ API)
+        // จัดการ Form Submit 
         async function handleDeptSubmit(e) {
             e.preventDefault();
-            // ... (เขียนโค้ดเรียก API create/update คล้ายกับของ user_management)
-            showToast('ฟังก์ชันนี้ยังไม่ได้เชื่อมต่อกับ API', 'error');
+            
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<div class="spinner-ring border-white w-4 h-4"></div> กำลังบันทึก...';
+            submitBtn.disabled = true;
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            const isUpdate = data.id && data.id !== '';
+            const endpoint = isUpdate ? 'api/departments/update.php' : 'api/departments/create.php';
+
+            try {
+                const response = await apiCall(endpoint, 'POST', data);
+                if (response.status === 'success') {
+                    showToast(response.message, 'success');
+                    closeModal('deptModal');
+                    loadDepartments();
+                } else {
+                    showToast(response.message, 'error');
+                }
+            } catch (error) {
+                showToast(error.message || 'เกิดข้อผิดพลาดในการบันทึก', 'error');
+            } finally {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            }
         }
 
-        // ลบแผนก (ต้องการ API)
+        // ลบแผนก 
         window.deleteDept = async function(id) {
-            if(confirm('ยืนยันการลบแผนก?')) {
-                // ... (เขียนโค้ดเรียก API delete)
-                showToast('ฟังก์ชันนี้ยังไม่ได้เชื่อมต่อกับ API', 'error');
+            if(confirm('ยืนยันการลบแผนกนี้?')) {
+                try {
+                    const response = await apiCall('api/departments/delete.php', 'POST', { id: id });
+                    if (response.status === 'success') {
+                        showToast(response.message, 'success');
+                        loadDepartments();
+                    } else {
+                        showToast(response.message, 'error');
+                    }
+                } catch (error) {
+                    showToast(error.message, 'error');
+                }
             }
         }
     </script>
