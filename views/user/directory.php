@@ -414,7 +414,7 @@ require_once __DIR__ . '/../includes/header.php';
                     document.getElementById('my_profile_mobile').value = data.mobile_number || '';
                     document.getElementById('my_profile_ip').value = data.ip_address || '';
                     document.getElementById('my_profile_email').value = data.email || '';
-                    document.getElementById('my_profile_phone_model').value = data.phone_model || '';
+                document.getElementById('my_profile_phone_model').value = data.phone_model || '';
 
                     // เพิ่มบรรทัดนี้: โหลดรูปโปรไฟล์เดิมมาแสดง ถ้าไม่มีให้ใช้รูป Default
 const avatarPreview = document.getElementById('my_profile_avatar_preview');

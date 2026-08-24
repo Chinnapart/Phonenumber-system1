@@ -216,7 +216,8 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-4">
                 <?php foreach ($deptContacts as $contact): ?>
                     <!-- Glass Card for Contact -->
-                    <div class="premium-glass rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-white/60 group relative cursor-pointer">
+                    <?php $contactJson = htmlspecialchars(json_encode($contact), ENT_QUOTES, 'UTF-8'); ?>
+                    <div onclick="showContactDetail(<?= $contactJson ?>)" class="premium-glass rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:bg-white/80 group relative cursor-pointer hover:shadow-[0_15px_30px_rgba(59,130,246,0.15)] hover:border-brand-300/50">
                         
                         <!-- 🌟 Status Badge (อิงตามสถานะการทำงาน) 🌟 -->
                         <div class="absolute top-4 right-4 z-10">
@@ -310,7 +311,98 @@ require_once __DIR__ . '/../includes/header.php';
 <?php
 // เนื่องจากเราไม่ได้แยกไฟล์ footer.php จึงแนบการเรียก JS ปิดท้ายตรงนี้
 ?>
-        </main> <!-- ปิดแท็ก main จาก header.php -->
+       
+    <!-- 🌟 MODAL: Contact Detail (แสดงข้อมูลฉบับเต็ม) 🌟 -->
+<div id="contactDetailModal" class="fixed inset-0 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeContactModal()"></div>
+    <div class="bg-white rounded-[2rem] w-full max-w-md mx-4 z-10 shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="contactDetailContent">
+        
+       <!-- Header Cover -->
+        <div class="relative h-28 bg-gradient-to-r from-brand-500 via-indigo-500 to-purple-500 animate-gradient-xy">
+            <button onclick="closeContactModal()" class="absolute top-4 right-4 text-white/80 hover:text-white bg-black/20 hover:bg-black/40 rounded-full p-1.5 backdrop-blur-md transition-colors">
+                <i class="ph ph-x text-xl"></i>
+            </button>
+        </div>
+        
+        <!-- Profile Info -->
+        <div class="px-8 pb-8 relative">
+            <div class="flex justify-between items-end -mt-12 mb-4">
+                <div class="w-24 h-24 rounded-2xl bg-white p-1 shadow-lg relative z-10">
+                    <div class="w-full h-full rounded-xl bg-gradient-to-br from-indigo-100 to-purple-50 flex items-center justify-center overflow-hidden border border-gray-100" id="modalAvatarContainer">
+                        <!-- Avatar จะถูกแทรกที่นี่ผ่าน JS -->
+                    </div>
+                </div>
+                <div id="modalStatusBadge" class="mb-2 relative z-10">
+                    <!-- Status จะถูกแทรกที่นี่ผ่าน JS -->
+                </div>
+            </div>
+            
+            <h3 class="text-2xl font-bold text-gray-900 leading-tight mb-1" id="modalFullName">ชื่อ นามสกุล</h3>
+            <p class="text-sm font-semibold text-brand-600 mb-6 bg-brand-50 inline-block px-3 py-1 rounded-full" id="modalJobTitle">ตำแหน่ง</p>
+            
+            <div class="space-y-5 bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                <!-- เบอร์ต่อ -->
+                <div class="flex items-start gap-3.5">
+                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm flex-shrink-0">
+                        <i class="ph ph-phone text-xl"></i>
+                    </div>
+                    <div class="pt-1">
+                        <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-0.5">เบอร์ต่อ (Extension)</p>
+                        <p class="text-sm font-mono font-bold text-slate-700" id="modalExt">-</p>
+                    </div>
+                </div>
+
+                <!-- มือถือ -->
+                <div class="flex items-start gap-3.5">
+                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm flex-shrink-0">
+                        <i class="ph ph-device-mobile text-xl"></i>
+                    </div>
+                    <div class="pt-1">
+                        <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-0.5">มือถือ (Mobile)</p>
+                        <p class="text-sm font-mono font-bold text-slate-700" id="modalMobile">-</p>
+                    </div>
+                </div>
+
+                <!-- อีเมล (ใช้ break-all ป้องกันข้อความล้น) -->
+                <div class="flex items-start gap-3.5">
+                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm flex-shrink-0">
+                        <i class="ph ph-envelope-simple text-xl"></i>
+                    </div>
+                    <div class="pt-1 w-full overflow-hidden">
+                        <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-0.5">อีเมล (E-mail)</p>
+                        <p class="text-sm font-medium text-slate-700 break-all" id="modalEmail">-</p>
+                    </div>
+                </div>
+
+                <!-- รุ่นโทรศัพท์ -->
+                <div class="flex items-start gap-3.5">
+                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-slate-500 shadow-sm flex-shrink-0">
+                        <i class="ph ph-device-mobile-camera text-xl"></i>
+                    </div>
+                    <div class="pt-1 w-full overflow-hidden">
+                        <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-0.5">รุ่นโทรศัพท์ (Phone Model)</p>
+                        <p class="text-sm font-medium text-slate-700 break-words" id="modalPhoneModel">-</p>
+                    </div>
+                </div>
+
+                <!-- IP Address -->
+                <div class="flex items-start gap-3.5">
+                    <div class="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500 shadow-sm flex-shrink-0">
+                        <i class="ph ph-laptop text-xl"></i>
+                    </div>
+                    <div class="pt-1">
+                        <p class="text-[0.65rem] font-bold text-indigo-400 uppercase tracking-wider mb-0.5">IP Address</p>
+                        <p class="text-sm font-mono font-bold text-indigo-600" id="modalIp">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+    
+    </main> <!-- ปิดแท็ก main จาก header.php -->
     </div> <!-- ปิดแท็ก div.flex-1 จาก header.php -->
 
     <!-- Core Scripts -->
@@ -343,6 +435,69 @@ require_once __DIR__ . '/../includes/header.php';
             updateUserClock();
             setInterval(updateUserClock, 1000);
         });
+    
+    // ---------------------------------------------
+        // ฟังก์ชันสำหรับเปิด Modal แสดงข้อมูลเต็ม
+        // ---------------------------------------------
+        function showContactDetail(contact) {
+            // เติมข้อมูล Text
+            document.getElementById('modalFullName').textContent = contact.first_name + ' ' + contact.last_name;
+            document.getElementById('modalJobTitle').textContent = contact.job_title || 'พนักงาน';
+            document.getElementById('modalEmail').textContent = contact.email || '-';
+            document.getElementById('modalExt').textContent = contact.extension || '-';
+            document.getElementById('modalMobile').textContent = contact.mobile_number || '-';
+            document.getElementById('modalPhoneModel').textContent = contact.phone_model || '-';
+            document.getElementById('modalIp').textContent = contact.ip_address || '-';
+            
+            // จัดการรูป Avatar
+            const avatarContainer = document.getElementById('modalAvatarContainer');
+            if (contact.avatar_url) {
+                avatarContainer.innerHTML = `<img src="<?= BASE_URL ?>${contact.avatar_url}" class="w-full h-full object-cover">`;
+            } else {
+                const initial = contact.first_name.charAt(0).toUpperCase() + (contact.last_name ? contact.last_name.charAt(0).toUpperCase() : '');
+                avatarContainer.innerHTML = `<span class="text-3xl font-bold text-indigo-500 uppercase tracking-widest">${initial}</span>`;
+            }
+
+            // จัดการป้ายสถานะ (Badge)
+            const statusContainer = document.getElementById('modalStatusBadge');
+            const ws = contact.work_status || 'available';
+            let badgeHtml = '';
+            
+            if (ws === 'on_call') {
+                badgeHtml = '<span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold tracking-wider bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-sm"><i class="ph-fill ph-phone-call mr-1.5"></i> ติดสาย</span>';
+            } else if (ws === 'away') {
+                badgeHtml = '<span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold tracking-wider bg-amber-50 text-amber-600 border border-amber-100 shadow-sm"><i class="ph-fill ph-clock mr-1.5"></i> ไม่อยู่</span>';
+            } else if (ws === 'busy') {
+                badgeHtml = '<span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold tracking-wider bg-rose-50 text-rose-600 border border-rose-100 shadow-sm"><i class="ph-fill ph-minus-circle mr-1.5"></i> ไม่ว่าง</span>';
+            } else {
+                badgeHtml = '<span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm"><i class="ph-fill ph-check-circle mr-1.5"></i> ว่าง</span>';
+            }
+            statusContainer.innerHTML = badgeHtml;
+
+            // แสดง Modal พร้อม Animation
+            const modal = document.getElementById('contactDetailModal');
+            const content = document.getElementById('contactDetailContent');
+            
+            modal.classList.remove('hidden');
+            // บังคับให้ Browser ทำงาน Reflow เพื่อให้ Animation ทำงาน
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+        }
+
+        function closeContactModal() {
+            const modal = document.getElementById('contactDetailModal');
+            const content = document.getElementById('contactDetailContent');
+            
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            
+            // รอจน Animation จบแล้วค่อยซ่อน (300ms)
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    
     </script>
 </body>
 </html>
