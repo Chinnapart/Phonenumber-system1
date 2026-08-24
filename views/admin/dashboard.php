@@ -12,39 +12,54 @@ require_once __DIR__ . '/../../core/Database.php';
 // 2. บังคับว่าต้องเป็น Admin เท่านั้น
 Auth::requireAdmin();
 
-// 🌟 เพิ่มใหม่: ดึงข้อมูลจริงจาก Database สำหรับกราฟ 7 วันย้อนหลัง
+// 🌟 เพิ่มใหม่: ดึงข้อมูลจริงจาก Database สำหรับกราฟ 7 วัน และ 12 เดือน
 $trendLabels = [];
 $trendOnline = [];
 $trendOffline = [];
 $daysTh = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
 
+$currentTotalOnline = 0;
+$currentTotalOffline = 0;
+
+// เตรียมข้อมูล 7 วันย้อนหลัง
 for ($i = 6; $i >= 0; $i--) {
     $targetDate = date('Y-m-d', strtotime("-$i days"));
     $dayOfWeek = date('w', strtotime($targetDate));
     
-    $trendLabels[] = $daysTh[$dayOfWeek]; // ใส่ชื่อวันภาษาไทย
+    $trendLabels[] = $daysTh[$dayOfWeek];
     
     if ($i === 0) {
-        // 1. สำหรับ "วันปัจจุบัน" (แท่งขวาสุด) 
-        // ให้นับยอดรวมสถานะทั้งหมดที่มีอยู่จริง ณ ตอนนี้ เพื่อให้ตรงกับตัวเลขสถิติด้านบน
+        // สำหรับ "วันปัจจุบัน" ให้นับยอดรวมสถานะทั้งหมด
         $onData = Database::getRow("SELECT COUNT(id) as total FROM contacts WHERE status = 'online'");
-        $trendOnline[] = $onData ? (int)$onData['total'] : 0;
+        $currentTotalOnline = $onData ? (int)$onData['total'] : 0;
+        $trendOnline[] = $currentTotalOnline;
         
         $offData = Database::getRow("SELECT COUNT(id) as total FROM contacts WHERE status = 'offline'");
-        $trendOffline[] = $offData ? (int)$offData['total'] : 0;
+        $currentTotalOffline = $offData ? (int)$offData['total'] : 0;
+        $trendOffline[] = $currentTotalOffline;
     } else {
-        // 2. สำหรับ "วันย้อนหลัง" (6 วันก่อนหน้า)
-        // เนื่องจากระบบยังไม่มีตารางเก็บประวัติรายวัน (History Log) จึงให้แสดงค่าเป็น 0 ตามความจริง 
+        // วันย้อนหลัง (ยังไม่มีระบบเก็บประวัติ) ให้เป็น 0
         $trendOnline[] = 0;
         $trendOffline[] = 0;
     }
 }
 
+// เตรียมข้อมูล 12 เดือน
+$monthlyOnline = array_fill(0, 12, 0); // สร้างชุดข้อมูล 12 เดือนให้เป็น 0 ก่อน
+$monthlyOffline = array_fill(0, 12, 0);
+$currentMonthIndex = (int)date('n') - 1; // หาเดือนปัจจุบัน (0 = ม.ค., 11 = ธ.ค.)
+
+// นำยอดรวมสถานะปัจจุบัน ไปใส่ในเดือนปัจจุบัน
+$monthlyOnline[$currentMonthIndex] = $currentTotalOnline;
+$monthlyOffline[$currentMonthIndex] = $currentTotalOffline;
+
 // แปลงเป็น JSON เพื่อส่งให้ Javascript
 $jsLabels = json_encode($trendLabels, JSON_UNESCAPED_UNICODE);
 $jsOnline = json_encode($trendOnline);
 $jsOffline = json_encode($trendOffline);
-// 🌟 สิ้นสุดส่วนที่เพิ่มใหม่
+$jsMonthlyOnline = json_encode($monthlyOnline);
+$jsMonthlyOffline = json_encode($monthlyOffline);
+// 🌟 สิ้นสุดการเตรียมข้อมูลกราฟ
 
 // 3. กำหนดชื่อหน้า และเรียกใช้ Header
 $pageTitle = 'แดชบอร์ด (Overview)';
@@ -463,10 +478,10 @@ require_once __DIR__ . '/../includes/header.php';
                 gradientOfflineM.addColorStop(0, 'rgba(244, 63, 94, 1)'); // Rose สด
                 gradientOfflineM.addColorStop(1, 'rgba(244, 63, 94, 0.2)');
 
-                // 💡 ข้อมูลจำลอง 12 เดือน (Mock Data)
+                /// 💡 ข้อมูลจริงจาก Database สำหรับเดือนปัจจุบัน
                 const monthsLabel = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-                const monthlyOnlineData = [45, 52, 48, 60, 65, 58, 70, 75, 72, 80, 85, 90];
-                const monthlyOfflineData = [12, 10, 15, 8, 5, 9, 4, 3, 5, 2, 4, 1];
+                const monthlyOnlineData = <?= $jsMonthlyOnline ?>;
+                const monthlyOfflineData = <?= $jsMonthlyOffline ?>;
 
                 // 🌟 Custom Plugin สำหรับโชว์ตัวเลขบนแท่งกราฟรายเดือน
                 const alwaysShowDataLabelsMonthly = {
