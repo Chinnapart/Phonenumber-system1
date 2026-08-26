@@ -223,14 +223,20 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-4">
                 <?php foreach ($deptContacts as $contact): ?>
                     <!-- Glass Card for Contact -->
-                    <?php $contactJson = htmlspecialchars(json_encode($contact), ENT_QUOTES, 'UTF-8'); ?>
-                    <div onclick="showContactDetail(<?= $contactJson ?>)" class="contact-card premium-glass rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:bg-white/80 group relative cursor-pointer hover:shadow-[0_15px_30px_rgba(59,130,246,0.15)] hover:border-brand-300/50" data-work-status="<?= $wStatus ?>">
+                    <?php 
+                        $contactJson = htmlspecialchars(json_encode($contact), ENT_QUOTES, 'UTF-8'); 
+                        // 🌟 แก้ไข: ดึงสถานะของแต่ละคนมาเก็บไว้ในตัวแปร $cardStatus ก่อน
+                        $cardStatus = isset($contact['work_status']) && $contact['work_status'] !== '' ? $contact['work_status'] : 'available'; 
+                    ?>
+                    
+                    <!-- 🌟 แก้ไข: ใส่ $cardStatus ลงใน data-work-status -->
+                    <div onclick="showContactDetail(<?= $contactJson ?>)" class="contact-card premium-glass rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:bg-white/80 group relative cursor-pointer hover:shadow-[0_15px_30px_rgba(59,130,246,0.15)] hover:border-brand-300/50" data-work-status="<?= $cardStatus ?>">
                         
                         <!-- 🌟 Status Badge (อิงตามสถานะการทำงาน) 🌟 -->
                         <div class="absolute top-4 right-4 z-10">
                             <?php 
-                                $wStatus = $contact['work_status'] ?? 'available';
-                                switch($wStatus) {
+                                // ตรงนี้สามารถใช้ $cardStatus แทนได้เลย
+                                switch($cardStatus) {
                                     case 'on_call':
                                         echo '<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-sm"><i class="ph-fill ph-phone-call mr-1.5 text-sm"></i> ติดสาย</span>';
                                         break;
@@ -549,19 +555,24 @@ require_once __DIR__ . '/../includes/header.php';
                 
                 contactCards.forEach(card => {
                     if (status === 'all' || card.dataset.workStatus === status) {
-                        card.style.display = 'block';
-                        // ใช้ setTimeout เพื่อให้ transition ทำงานสมูทขึ้น
+                        // เปลี่ยนจาก display:block เป็นการเอา class hidden ออกเพื่อให้ Grid ทำงานจัดเรียงใหม่
+                        card.classList.remove('hidden');
+                        
+                        // รอจังหวะนิดนึงเพื่อให้ transition แสดงผลความสมูท
                         setTimeout(() => {
                             card.style.opacity = '1';
                             card.style.transform = 'scale(1)';
-                        }, 50);
+                        }, 10);
                         visibleCount++;
                     } else {
+                        // ก่อนจะซ่อนให้ปรับลดขนาดและจางลง
                         card.style.opacity = '0';
                         card.style.transform = 'scale(0.95)';
+                        
+                        // รอ transition จบแล้วค่อยตัดออกจากหน้าจอ (hidden) เพื่อให้ Grid จัดเรียงใหม่
                         setTimeout(() => {
-                            card.style.display = 'none';
-                        }, 300); // รอให้ transition จบก่อนซ่อน
+                            card.classList.add('hidden');
+                        }, 300); // 300ms ต้องตรงกับ duration-300 ในคลาสของการ์ด
                     }
                 });
 
@@ -584,15 +595,11 @@ require_once __DIR__ . '/../includes/header.php';
                 } else {
                     clearFilterContainer.classList.remove('hidden');
                 }
-                
-                // (Optional) ถ้ากรองแล้วไม่เจอใครเลย อาจจะแสดงข้อความเตือน
-                // ...
             }
 
             // ผูก Event Click ให้กับกล่องสถานะทั้ง 4
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    // ป้องกันการ Trigger ซ้ำซ้อนถ้าคลิกโดนไอคอนด้านใน
                     e.currentTarget.blur();
                     const status = e.currentTarget.dataset.status;
                     filterContacts(status);
@@ -607,6 +614,5 @@ require_once __DIR__ . '/../includes/header.php';
             }
         });
     </script>
-
 </body>
 </html>
