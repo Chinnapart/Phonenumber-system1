@@ -166,49 +166,56 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
                 
                 <!-- 1. ว่าง (Available) -->
-                <div class="bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-emerald-100/80 shadow-[0_8px_20px_rgb(16,185,129,0.05)] flex items-center gap-4 hover:-translate-y-1 transition-all duration-300 group">
+                <button type="button" class="status-filter-btn bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-emerald-100/80 shadow-[0_8px_20px_rgb(16,185,129,0.05)] flex items-center gap-4 hover:-translate-y-1 transition-all duration-300 group cursor-pointer focus:outline-none" data-status="available">
                     <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 text-emerald-600 flex items-center justify-center text-xl shadow-sm border border-emerald-200/50 group-hover:scale-110 transition-transform">
                         <i class="ph-fill ph-check-circle"></i>
                     </div>
-                    <div>
+                    <div class="text-left">
                         <p class="text-[0.65rem] font-bold text-gray-500 uppercase tracking-widest mb-0.5">ว่าง</p>
                         <p class="text-2xl font-black text-emerald-600 leading-none"><?= $availableCount ?></p>
                     </div>
-                </div>
+                </button>
 
                 <!-- 2. ติดสาย (On a call) -->
-                <div class="bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-indigo-100/80 shadow-[0_8px_20px_rgb(99,102,241,0.05)] flex items-center gap-4 hover:-translate-y-1 transition-all duration-300 group">
+                <button type="button" class="status-filter-btn bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-indigo-100/80 shadow-[0_8px_20px_rgb(99,102,241,0.05)] flex items-center gap-4 hover:-translate-y-1 transition-all duration-300 group cursor-pointer focus:outline-none" data-status="on_call">
                     <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-600 flex items-center justify-center text-xl shadow-sm border border-indigo-200/50 group-hover:scale-110 transition-transform">
                         <i class="ph-fill ph-phone-call"></i>
                     </div>
-                    <div>
+                    <div class="text-left">
                         <p class="text-[0.65rem] font-bold text-gray-500 uppercase tracking-widest mb-0.5">ติดสาย</p>
                         <p class="text-2xl font-black text-indigo-600 leading-none"><?= $onCallCount ?></p>
                     </div>
-                </div>
+                </button>
 
                 <!-- 3. ไม่อยู่ (Away) -->
-                <div class="bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-amber-100/80 shadow-[0_8px_20px_rgb(245,158,11,0.05)] flex items-center gap-4 hover:-translate-y-1 transition-all duration-300 group">
+                <button type="button" class="status-filter-btn bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-amber-100/80 shadow-[0_8px_20px_rgb(245,158,11,0.05)] flex items-center gap-4 hover:-translate-y-1 transition-all duration-300 group cursor-pointer focus:outline-none" data-status="away">
                     <div class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-50 to-amber-100 text-amber-600 flex items-center justify-center text-xl shadow-sm border border-amber-200/50 group-hover:scale-110 transition-transform">
                         <i class="ph-fill ph-clock"></i>
                     </div>
-                    <div>
+                    <div class="text-left">
                         <p class="text-[0.65rem] font-bold text-gray-500 uppercase tracking-widest mb-0.5">ไม่อยู่</p>
                         <p class="text-2xl font-black text-amber-600 leading-none"><?= $awayCount ?></p>
                     </div>
-                </div>
+                </button>
 
                 <!-- 4. ไม่ว่าง (Busy) -->
-                <div class="bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-rose-100/80 shadow-[0_8px_20px_rgb(244,63,94,0.05)] flex items-center gap-4 hover:-translate-y-1 transition-all duration-300 group">
+                <button type="button" class="status-filter-btn bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-rose-100/80 shadow-[0_8px_20px_rgb(244,63,94,0.05)] flex items-center gap-4 hover:-translate-y-1 transition-all duration-300 group cursor-pointer focus:outline-none" data-status="busy">
                     <div class="w-12 h-12 rounded-full bg-gradient-to-br from-rose-50 to-rose-100 text-rose-600 flex items-center justify-center text-xl shadow-sm border border-rose-200/50 group-hover:scale-110 transition-transform">
                         <i class="ph-fill ph-minus-circle"></i>
                     </div>
-                    <div>
+                    <div class="text-left">
                         <p class="text-[0.65rem] font-bold text-gray-500 uppercase tracking-widest mb-0.5">ไม่ว่าง</p>
                         <p class="text-2xl font-black text-rose-600 leading-none"><?= $busyCount ?></p>
                     </div>
-                </div>
+                </button>
 
+            </div>
+            
+            <!-- เพิ่มปุ่มล้างตัวกรอง (จะแสดงก็ต่อเมื่อมีการคลิกเลือกสถานะ) -->
+            <div id="clearFilterContainer" class="hidden text-right mt-3 mb-1">
+                 <button type="button" id="clearFilterBtn" class="text-xs font-semibold text-brand-600 hover:text-brand-800 transition-colors inline-flex items-center gap-1">
+                     <i class="ph ph-x-circle"></i> เลิกกรองสถานะ (แสดงทั้งหมด)
+                 </button>
             </div>
             <!-- 🌟 สิ้นสุดสรุปสถานะ 🌟 -->
             
@@ -217,7 +224,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <?php foreach ($deptContacts as $contact): ?>
                     <!-- Glass Card for Contact -->
                     <?php $contactJson = htmlspecialchars(json_encode($contact), ENT_QUOTES, 'UTF-8'); ?>
-                    <div onclick="showContactDetail(<?= $contactJson ?>)" class="premium-glass rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:bg-white/80 group relative cursor-pointer hover:shadow-[0_15px_30px_rgba(59,130,246,0.15)] hover:border-brand-300/50">
+                    <div onclick="showContactDetail(<?= $contactJson ?>)" class="contact-card premium-glass rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:bg-white/80 group relative cursor-pointer hover:shadow-[0_15px_30px_rgba(59,130,246,0.15)] hover:border-brand-300/50" data-work-status="<?= $wStatus ?>">
                         
                         <!-- 🌟 Status Badge (อิงตามสถานะการทำงาน) 🌟 -->
                         <div class="absolute top-4 right-4 z-10">
@@ -527,5 +534,79 @@ require_once __DIR__ . '/../includes/header.php';
         }
 
     </script>
+
+<!-- Script สำหรับ Filter การ์ดด้วยสถานะ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterBtns = document.querySelectorAll('.status-filter-btn');
+            const contactCards = document.querySelectorAll('.contact-card');
+            const clearFilterBtn = document.getElementById('clearFilterBtn');
+            const clearFilterContainer = document.getElementById('clearFilterContainer');
+
+            // ฟังก์ชันสำหรับกรองการ์ด
+            function filterContacts(status) {
+                let visibleCount = 0;
+                
+                contactCards.forEach(card => {
+                    if (status === 'all' || card.dataset.workStatus === status) {
+                        card.style.display = 'block';
+                        // ใช้ setTimeout เพื่อให้ transition ทำงานสมูทขึ้น
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'scale(1)';
+                        }, 50);
+                        visibleCount++;
+                    } else {
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300); // รอให้ transition จบก่อนซ่อน
+                    }
+                });
+
+                // อัปเดตสไตล์ของปุ่ม Filter เพื่อแสดงว่าปุ่มไหนกำลังถูกเลือกอยู่
+                filterBtns.forEach(btn => {
+                    if (status === 'all') {
+                         btn.classList.remove('ring-2', 'ring-offset-2', 'ring-brand-500', 'scale-105');
+                    } else {
+                         if (btn.dataset.status === status) {
+                             btn.classList.add('ring-2', 'ring-offset-2', 'ring-brand-500', 'scale-105');
+                         } else {
+                             btn.classList.remove('ring-2', 'ring-offset-2', 'ring-brand-500', 'scale-105');
+                         }
+                    }
+                });
+
+                // ซ่อน/แสดง ปุ่มล้างตัวกรอง
+                if (status === 'all') {
+                    clearFilterContainer.classList.add('hidden');
+                } else {
+                    clearFilterContainer.classList.remove('hidden');
+                }
+                
+                // (Optional) ถ้ากรองแล้วไม่เจอใครเลย อาจจะแสดงข้อความเตือน
+                // ...
+            }
+
+            // ผูก Event Click ให้กับกล่องสถานะทั้ง 4
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    // ป้องกันการ Trigger ซ้ำซ้อนถ้าคลิกโดนไอคอนด้านใน
+                    e.currentTarget.blur();
+                    const status = e.currentTarget.dataset.status;
+                    filterContacts(status);
+                });
+            });
+
+            // ผูก Event ให้ปุ่มล้างตัวกรอง
+            if (clearFilterBtn) {
+                clearFilterBtn.addEventListener('click', () => {
+                    filterContacts('all');
+                });
+            }
+        });
+    </script>
+
 </body>
 </html>
