@@ -24,9 +24,17 @@ $myProfile = Database::getRow(
 );
 
 // แก้เป็น: (รับค่า dept_id จากปุ่มที่กดมา ถ้าไม่มีให้ใช้แผนกตัวเอง)
+// รับค่า dept_id จากปุ่มที่กดมา ถ้าไม่มีให้ใช้แผนกตัวเอง
 $myDeptId = isset($_GET['dept_id']) ? (int)$_GET['dept_id'] : ($myProfile ? $myProfile['department_id'] : null);
-$myDeptName = ($myProfile && $myProfile['dept_name']) ? $myProfile['dept_name'] : 'ยังไม่ระบุแผนก';
-$myDeptColor = ($myProfile && $myProfile['color_code']) ? $myProfile['color_code'] : '#94a3b8';
+
+// 🌟 แก้ไข: ดึงชื่อและสีแผนก ตาม ID แผนกที่กำลังจะแสดง (ไม่ใช่เอาจากโปรไฟล์เสมอไป)
+$currentDeptInfo = null;
+if ($myDeptId) {
+    $currentDeptInfo = Database::getRow("SELECT name, color_code FROM departments WHERE id = ?", [$myDeptId]);
+}
+
+$myDeptName = $currentDeptInfo ? $currentDeptInfo['name'] : 'ยังไม่ระบุแผนก';
+$myDeptColor = ($currentDeptInfo && $currentDeptInfo['color_code']) ? $currentDeptInfo['color_code'] : '#94a3b8';
 
 // 3. ดึงรายชื่อพนักงานทั้งหมดที่อยู่ในแผนกเดียวกัน
 $deptContacts = [];
