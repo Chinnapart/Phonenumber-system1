@@ -210,6 +210,19 @@ require_once __DIR__ . '/../includes/header.php';
                     </div>
                 </div>
 
+                <!-- 🌟 เพิ่มใหม่: รหัสพนักงาน (Employee ID) 🌟 -->
+<div>
+    <label class="block text-sm font-medium text-gray-700 mb-1.5">รหัสพนักงาน (Employee ID)</label>
+    <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+            <i class="ph ph-identification-badge"></i>
+        </div>
+        <input type="text" id="my_profile_emp_id" name="employee_id" 
+               class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none" 
+               placeholder="เช่น EMP001">
+    </div>
+</div>
+                
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">ตำแหน่ง (Job Title)</label>
                     <input type="text" id="my_profile_jt" name="job_title" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none">
@@ -409,6 +422,7 @@ require_once __DIR__ . '/../includes/header.php';
                     document.getElementById('my_profile_id').value = data.id || '';
                     document.getElementById('my_profile_fn').value = data.first_name || '';
                     document.getElementById('my_profile_ln').value = data.last_name || '';
+                    document.getElementById('my_profile_emp_id').value = data.employee_id || '';
                     document.getElementById('my_profile_jt').value = data.job_title || '';
                     document.getElementById('my_profile_dept').value = data.department_id || '';
                     document.getElementById('my_profile_ext').value = data.extension || '';

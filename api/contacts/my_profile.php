@@ -33,14 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             'status' => 'success', 
             'data' => [
                 'id' => '',
+                'employee_id' => '',       
                 'first_name' => $parts[0] ?? '',
                 'last_name' => $parts[1] ?? '',
                 'job_title' => '',
                 'department_id' => '',
                 'extension' => '',
                 'mobile_number' => '',
-                'email' => '',             // 🌟 เพิ่ม email
-                'phone_model' => '',       // 🌟 เพิ่ม phone_model
+                'email' => '',             
+                'phone_model' => '',       
                 'ip_address' => ''
             ],
             'is_new' => true // ตัวบ่งชี้ว่าเป็นข้อมูลใหม่
@@ -55,12 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // เปลี่ยนมารับค่าจาก $_POST แทนการใช้ json_decode
     $id = $_POST['id'] ?? '';
+    $employeeId = $_POST['employee_id'] ?? ''; 
     $jobTitle = $_POST['job_title'] ?? '';
     $departmentId = !empty($_POST['department_id']) ? (int)$_POST['department_id'] : null;
     $extension = $_POST['extension'] ?? '';
     $mobileNumber = $_POST['mobile_number'] ?? '';
-    $email = $_POST['email'] ?? '';             // 🌟 รับค่า email
-    $phoneModel = $_POST['phone_model'] ?? '';  // 🌟 รับค่า phone_model
+    $email = $_POST['email'] ?? '';             
+    $phoneModel = $_POST['phone_model'] ?? '';  
     $ipAddress = $_POST['ip_address'] ?? '';
 
     $parts = explode(' ', $fullName, 2);
@@ -95,15 +97,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         if (empty($id)) {
-            // กรณีเป็นข้อมูลใหม่ที่ยังไม่มีในสมุดรายชื่อ (🌟 เพิ่ม email, phone_model ในคำสั่ง INSERT)
-            $sql = "INSERT INTO contacts (first_name, last_name, job_title, department_id, extension, mobile_number, email, phone_model, ip_address, status, created_by, avatar_url) 
-                    VALUES (:fn, :ln, :jt, :dept, :ext, :mob, :email, :phone_model, :ip, 'online', :cb, :avatar)";
+            // กรณีเป็นข้อมูลใหม่ที่ยังไม่มีในสมุดรายชื่อ
+            
+            $sql = "INSERT INTO contacts (employee_id, first_name, last_name, job_title, department_id, extension, mobile_number, email, phone_model, ip_address, status, created_by, avatar_url) 
+                    VALUES (:employee_id, :fn, :ln, :jt, :dept, :ext, :mob, :email, :phone_model, :ip, 'online', :cb, :avatar)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
-                ':fn' => $firstName, ':ln' => $lastName, ':jt' => $jobTitle,
-                ':dept' => $departmentId, ':ext' => $extension, ':mob' => $mobileNumber,
-                ':email' => $email, ':phone_model' => $phoneModel,
-                ':ip' => $ipAddress, ':cb' => $_SESSION['user_id'], ':avatar' => $avatarUrl
+                ':employee_id' => $employeeId, 
+                ':ln' => $lastName, 
+                ':jt' => $jobTitle,
+                ':dept' => $departmentId, 
+                ':ext' => $extension, 
+                ':mob' => $mobileNumber,
+                ':email' => $email, 
+                ':phone_model' => $phoneModel,
+                ':ip' => $ipAddress, 
+                ':cb' => $_SESSION['user_id'], 
+                ':avatar' => $avatarUrl
             ]);
         } else {
             // กรณีมีข้อมูลอยู่แล้ว เช็คสิทธิ์ก่อนแก้ไข
@@ -115,31 +125,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
 
-            // ถ้ารูปมีการอัปโหลดใหม่ให้อัปเดต path รูปด้วย (🌟 เพิ่ม email, phone_model ในคำสั่ง UPDATE)
+            // ถ้ารูปมีการอัปโหลดใหม่ให้อัปเดต path รูปด้วย
             if ($avatarUrl) {
                 $sql = "UPDATE contacts SET 
-                        job_title = :jt, department_id = :dept, extension = :ext, 
-                        mobile_number = :mob, email = :email, phone_model = :phone_model, 
-                        ip_address = :ip, avatar_url = :avatar 
+                        employee_id = :employee_id, 
+                        job_title = :jt, 
+                        department_id = :dept, 
+                        extension = :ext, 
+                        mobile_number = :mob, 
+                        email = :email, 
+                        phone_model = :phone_model, 
+                        ip_address = :ip, 
+                        avatar_url = :avatar 
                         WHERE id = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
-                    ':jt' => $jobTitle, ':dept' => $departmentId, ':ext' => $extension, 
-                    ':mob' => $mobileNumber, ':email' => $email, ':phone_model' => $phoneModel, 
-                    ':ip' => $ipAddress, ':avatar' => $avatarUrl, ':id' => $id
+                    ':employee_id' => $employeeId, 
+                    ':dept' => $departmentId, 
+                    ':ext' => $extension, 
+                    ':mob' => $mobileNumber, 
+                    ':email' => $email, 
+                    ':phone_model' => $phoneModel, 
+                    ':ip' => $ipAddress, 
+                    ':avatar' => $avatarUrl, 
+                    ':id' => $id
                 ]);
             } else {
-                // ถ้าไม่ได้เปลี่ยนรูป ก็อัปเดตแค่ข้อมูลปกติ (🌟 เพิ่ม email, phone_model ในคำสั่ง UPDATE)
+                // ถ้าไม่ได้เปลี่ยนรูป ก็อัปเดตแค่ข้อมูลปกติ
                 $sql = "UPDATE contacts SET 
-                        job_title = :jt, department_id = :dept, extension = :ext, 
-                        mobile_number = :mob, email = :email, phone_model = :phone_model, 
+                        employee_id = :employee_id, 
+                        job_title = :jt, 
+                        department_id = :dept, 
+                        extension = :ext, 
+                        mobile_number = :mob, 
+                        email = :email, 
+                        phone_model = :phone_model, 
                         ip_address = :ip 
                         WHERE id = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
-                    ':jt' => $jobTitle, ':dept' => $departmentId, ':ext' => $extension, 
-                    ':mob' => $mobileNumber, ':email' => $email, ':phone_model' => $phoneModel, 
-                    ':ip' => $ipAddress, ':id' => $id
+                    ':employee_id' => $employeeId, 
+                    ':jt' => $jobTitle, 
+                    ':dept' => $departmentId, 
+                    ':ext' => $extension, 
+                    ':mob' => $mobileNumber, 
+                    ':email' => $email, 
+                    ':phone_model' => $phoneModel, 
+                    ':ip' => $ipAddress, 
+                    ':id' => $id
                 ]);
             }
         }
@@ -147,7 +180,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['status' => 'success', 'message' => 'อัปเดตข้อมูลโปรไฟล์และรูปภาพสำเร็จ!']);
     } catch (PDOException $e) {
         http_response_code(500);
-        echo json_encode(['status' => 'error', 'message' => 'เกิดข้อผิดพลาดจากฐานข้อมูล']);
+        // แสดง error message ของ PDO เพื่อให้ง่ายต่อการตรวจสอบ
+        echo json_encode(['status' => 'error', 'message' => 'เกิดข้อผิดพลาดจากฐานข้อมูล: ' . $e->getMessage()]);
     }
     exit();
 }
