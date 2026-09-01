@@ -12,6 +12,14 @@ if (!class_exists('Auth')) {
 $currentUser = Auth::getCurrentUser();
 $isAdmin = Auth::isAdmin();
 
+// ⭐⭐⭐ โค้ดที่ต้องเพิ่ม: สั่งให้ดึงรูปล่าสุดจาก Database โดยตรง ⭐⭐⭐
+require_once __DIR__ . '/../../core/Database.php';
+$latestContact = Database::getRow("SELECT avatar_url FROM contacts WHERE CONCAT(first_name, ' ', last_name) = ?", [$currentUser['full_name']]);
+if ($latestContact && !empty($latestContact['avatar_url'])) {
+    $currentUser['avatar_url'] = $latestContact['avatar_url'];
+}
+// ⭐⭐⭐ สิ้นสุดโค้ดที่เพิ่ม ⭐⭐⭐
+
 // ฟังก์ชันช่วยเช็คหน้าปัจจุบัน เพื่อทำแถบสีไฮไลต์เมนู (Active State)
 $currentPage = basename($_SERVER['PHP_SELF']);
 ?>

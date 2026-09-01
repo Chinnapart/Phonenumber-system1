@@ -11,6 +11,12 @@ if (!class_exists('Auth')) {
 
 $currentUser = Auth::getCurrentUser();
 
+require_once __DIR__ . '/../../core/Database.php';
+$latestContact = Database::getRow("SELECT avatar_url FROM contacts WHERE CONCAT(first_name, ' ', last_name) = ?", [$currentUser['full_name']]);
+if ($latestContact && !empty($latestContact['avatar_url'])) {
+    $currentUser['avatar_url'] = $latestContact['avatar_url'];
+}
+
 // Logic จัดการคำทักทายตามช่วงเวลาของวัน
 $hour = date('H');
 if ($hour >= 5 && $hour < 12) {
