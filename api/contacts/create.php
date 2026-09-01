@@ -27,6 +27,7 @@ function getValue($field, $input) {
     return isset($_POST[$field]) ? trim($_POST[$field]) : (isset($input[$field]) ? trim($input[$field]) : '');
 }
 
+$employeeId   = getValue('employee_id', $input);
 $firstName    = getValue('first_name', $input);
 $lastName     = getValue('last_name', $input);
 $jobTitle     = getValue('job_title', $input);
@@ -53,11 +54,12 @@ try {
     $pdo->beginTransaction();
 
     // 7. คำสั่ง SQL สำหรับเพิ่มผู้ติดต่อ
-    $sql = "INSERT INTO contacts (first_name, last_name, job_title, department_id, extension, mobile_number, ip_address, status, created_by) 
-            VALUES (:first_name, :last_name, :job_title, :department_id, :extension, :mobile_number, :ip_address, 'unknown', :created_by)";
+    $sql = "INSERT INTO contacts (employee_id, first_name, last_name, job_title, department_id, extension, mobile_number, ip_address, status, created_by) 
+            VALUES (:employee_id, :first_name, :last_name, :job_title, :department_id, :extension, :mobile_number, :ip_address, 'unknown', :created_by)";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
+        ':employee_id'   => $employeeId, // <-- ถ้าไม่มีตัวแปร $employeeId ประกาศไว้ข้างบน จะทำให้พังได้
         ':first_name'    => $firstName,
         ':last_name'     => $lastName,
         ':job_title'     => $jobTitle,

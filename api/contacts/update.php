@@ -38,6 +38,7 @@ if (empty($id)) {
 }
 
 // รับค่าอื่นๆ ที่อาจจะถูกส่งมาแก้ไข
+$employeeId   = getValue('employee_id', $input);
 $firstName    = getValue('first_name', $input);
 $lastName     = getValue('last_name', $input);
 $jobTitle     = getValue('job_title', $input);
@@ -62,6 +63,7 @@ try {
 
     // 6. คำสั่ง SQL สำหรับอัปเดตข้อมูลผู้ติดต่อ
     $sql = "UPDATE contacts SET 
+                employee_id = :employee_id,
                 first_name = :first_name, 
                 last_name = :last_name, 
                 job_title = :job_title, 
@@ -73,6 +75,7 @@ try {
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
+        ':employee_id'   => $employeeId,
         ':first_name'    => $firstName,
         ':last_name'     => $lastName,
         ':job_title'     => $jobTitle,

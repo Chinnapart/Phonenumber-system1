@@ -339,6 +339,11 @@ window.openEditModal = async function(id) {
 
         if (contact) {
             document.getElementById('form_id').value = contact.id;
+           
+           const employeeIdInput = document.getElementById('form_employee_id');
+            if (employeeIdInput) {
+                employeeIdInput.value = contact.employee_id || '';
+            }
             document.getElementById('form_first_name').value = contact.first_name;
             document.getElementById('form_last_name').value = contact.last_name;
             document.getElementById('form_job_title').value = contact.job_title || '';
@@ -512,6 +517,7 @@ window.exportToCSV = async function(buttonElement) {
                 // ต้องใส่เครื่องหมาย " ครอบข้อความที่มี , หรือเว้นวรรค ป้องกันไฟล์ CSV แตก
                 const row = [
                     c.id,
+                    `"${c.employee_id || ''}"`,
                     `"${c.first_name || ''}"`,
                     `"${c.last_name || ''}"`,
                     `"${c.job_title || ''}"`,
