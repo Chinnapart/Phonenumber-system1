@@ -176,7 +176,13 @@ function renderTable(contacts) {
         // นำตัวแปร deviceStatusHtml มาใช้งานตรง td ที่ id="status-cell-${contact.id}"
         html += `
             <tr class="hover:bg-slate-50 transition-colors group">
-                <td class="font-medium text-gray-900">
+               
+            <!-- 🌟 เพิ่มข้อมูลรหัสพนักงานตรงนี้เป็นคอลัมน์แรก 🌟 -->
+                <td class="text-center font-mono font-medium text-slate-600">
+                    ${contact.employee_id || '-'}
+                </td>
+
+            <td class="font-medium text-gray-900">
                     <div class="flex items-center gap-3">
                         ${contact.avatar_url 
                             ? `<img src="${BASE_URL}${contact.avatar_url}" alt="Profile" class="w-9 h-9 rounded-full object-cover shadow-sm border border-gray-100 flex-shrink-0">` 

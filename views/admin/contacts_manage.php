@@ -98,6 +98,7 @@ require_once __DIR__ . '/../includes/header.php';
             <table class="custom-table whitespace-nowrap">
                 <thead>
                     <tr>
+                        <th class="text-center w-24">EMP</th>
                         <th class="text-center w-2/6">ชื่อ - นามสกุล</th>
                         <th class="text-center w-2/6">สถานะUser</th>
                         <th class="text-center w-1/6">แผนก</th>
