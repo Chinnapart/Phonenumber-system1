@@ -473,23 +473,23 @@ avatarPreview.src = data.avatar_url ? BASE_URL + data.avatar_url : `https://ui-a
             // --- เพิ่มโค้ดส่วนนี้เข้าไปใหม่ ---
             // 1. อัปเดตรูปบน Sidebar (จุดที่คุณต้องการ)
             // หา element รูปโปรไฟล์ที่แถบด้านซ้ายล่าง แล้วอัปเดต src 
-            const sidebarAvatar = document.querySelector('aside .rounded-full img'); 
-            if (sidebarAvatar) {
-                // ดึงรูปใหม่จาก preview หรือจาก result (ถ้า API ส่งกลับมา) 
-                const newAvatarUrl = document.getElementById('my_profile_avatar_preview').src;
-                sidebarAvatar.src = newAvatarUrl;
-            } else {
-                // ถ้ารูปเดิมเป็น div วงกลม (ยังไม่มีรูป) อาจจะต้อง reload เพื่อให้แสดงผลถูกต้อง
-                window.location.reload(); 
+           // ดึง URL ของรูปที่พรีวิวไว้มาใช้งาน
+            const newAvatarUrl = document.getElementById('my_profile_avatar_preview').src;
+
+            // 1. อัปเดตรูปบน Sidebar (ซ้ายล่าง)
+            const sidebarContainer = document.querySelector('aside .rounded-full.overflow-hidden'); 
+            if (sidebarContainer) {
+                // ยัดแท็ก img ลงไปใหม่เลย เพื่อแก้ปัญหาถ้าแต่ก่อนเป็นแค่ตัวอักษรย่อ
+                sidebarContainer.innerHTML = `<img src="${newAvatarUrl}" alt="Profile" class="w-full h-full object-cover">`;
             }
             
             // 2. อัปเดตรูปบน Topbar (มุมขวาบน)
-            const topbarAvatar = document.querySelector('header .rounded-full img');
-            if (topbarAvatar) {
-                const newAvatarUrl = document.getElementById('my_profile_avatar_preview').src;
-                topbarAvatar.src = newAvatarUrl;
+            const topbarContainer = document.getElementById('topbarAvatarContainer');
+            if (topbarContainer) {
+                // ยัดแท็ก img ลงไปใหม่เหมือนกัน
+                topbarContainer.innerHTML = `<img src="${newAvatarUrl}" alt="Profile" class="w-full h-full object-cover">`;
             }
-            // ---------------------------------
+            
             
         } else {
             showToast(result.message, 'error');

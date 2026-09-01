@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $departmentId = !empty($_POST['department_id']) ? (int)$_POST['department_id'] : null;
     $extension = $_POST['extension'] ?? '';
     $mobileNumber = $_POST['mobile_number'] ?? '';
-    $email = $_POST['email'] ?? '';             
+    $email = $_POST['email'] ?? '';            
     $phoneModel = $_POST['phone_model'] ?? '';  
     $ipAddress = $_POST['ip_address'] ?? '';
 
@@ -104,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':employee_id' => $employeeId, 
+                ':fn' => $firstName,        // ⭐⭐⭐ เพิ่มบรรทัดนี้ที่หายไป (ชื่อ) ⭐⭐⭐
                 ':ln' => $lastName, 
                 ':jt' => $jobTitle,
                 ':dept' => $departmentId, 
@@ -141,6 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':employee_id' => $employeeId, 
+                    ':jt' => $jobTitle,         // ⭐⭐⭐ เพิ่มบรรทัดนี้ที่หายไป (ตำแหน่ง) ⭐⭐⭐
                     ':dept' => $departmentId, 
                     ':ext' => $extension, 
                     ':mob' => $mobileNumber, 
@@ -177,7 +179,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+       // ... โค้ดเดิมที่ทำการ UPDATE contacts ...
+        
+        // ⭐⭐⭐ เพิ่มโค้ดส่วนนี้เข้าไป เพื่อให้อัปเดตรูปที่มุมขวาบนและระบบจดจำถาวร ⭐⭐⭐
+        if ($avatarUrl) {
+            // 1. อัปเดต path รูปภาพลงในตาราง users ด้วย
+            $stmtUser = $pdo->prepare("UPDATE users SET avatar_url = :avatar WHERE id = :user_id");
+            $stmtUser->execute([
+                ':avatar' => $avatarUrl, 
+                ':user_id' => $_SESSION['user_id']
+            ]);
+            
+            // 2. อัปเดตความจำของระบบ (Session) ณ ปัจจุบัน
+            $_SESSION['avatar_url'] = $avatarUrl;
+            
+            // (เผื่อระบบ Auth ของคุณเก็บ Session ในรูปแบบ Array)
+            if (isset($_SESSION['user'])) {
+                $_SESSION['user']['avatar_url'] = $avatarUrl;
+            }
+        }
+        // ⭐⭐⭐ สิ้นสุดโค้ดที่เพิ่ม ⭐⭐⭐
+
+        // ส่งข้อความกลับไปบอกหน้าจอว่าสำเร็จ
         echo json_encode(['status' => 'success', 'message' => 'อัปเดตข้อมูลโปรไฟล์และรูปภาพสำเร็จ!']);
+
+    // ปิดการทำงานของ try
     } catch (PDOException $e) {
         http_response_code(500);
         // แสดง error message ของ PDO เพื่อให้ง่ายต่อการตรวจสอบ

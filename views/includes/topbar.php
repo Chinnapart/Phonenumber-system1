@@ -69,14 +69,18 @@ if ($hour >= 5 && $hour < 12) {
                 <p class="text-sm font-semibold text-gray-900 leading-tight"><?= htmlspecialchars($currentUser['full_name']) ?></p>
                 <p class="text-xs text-brand-600 font-medium capitalize"><?= htmlspecialchars($currentUser['role']) ?></p>
             </div>
+            
             <!-- รูปโปรไฟล์ Avatar -->
-            <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold flex-shrink-0 overflow-hidden">
-    <?php if (!empty($currentUser['avatar_url'])): ?>
-        <img src="<?= BASE_URL . $currentUser['avatar_url'] ?>" alt="Profile" class="w-full h-full object-cover">
-    <?php else: ?>
-        <?= strtoupper(substr($currentUser['full_name'], 0, 1)) ?>
-    <?php endif; ?>
-</div>
+            <!-- ⭐⭐⭐ เพิ่ม id="topbarAvatarContainer" ตรงแท็ก div ด้านล่างนี้ ⭐⭐⭐ -->
+            <div id="topbarAvatarContainer" class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold flex-shrink-0 overflow-hidden">
+                <?php if (!empty($currentUser['avatar_url'])): ?>
+                    <img src="<?= BASE_URL . $currentUser['avatar_url'] ?>" alt="Profile" class="w-full h-full object-cover">
+                <?php else: ?>
+                    <?= strtoupper(substr($currentUser['full_name'], 0, 1)) ?>
+                <?php endif; ?>
+            </div>
+            <!-- ⭐⭐⭐ สิ้นสุดจุดที่แก้ไข ⭐⭐⭐ -->
+            
         </div>
     </div>
 </header>
