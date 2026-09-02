@@ -92,10 +92,14 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 
-    <!-- Table Container -->
+   <!-- Table Container -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="table-container">
-            <table class="custom-table whitespace-nowrap">
+        
+        <!-- ⭐⭐⭐ 1. เพิ่ม overflow-x-auto และ custom-scrollbar ตรงนี้ ⭐⭐⭐ -->
+        <div class="table-container overflow-x-auto custom-scrollbar">
+            
+            <!-- ⭐⭐⭐ 2. แนะนำให้เพิ่ม w-full เข้าไปที่แท็ก table ด้วยครับ ⭐⭐⭐ -->
+            <table class="custom-table whitespace-nowrap w-full">
                 <thead>
                     <tr>
                         <th class="text-center w-24">EMP</th>
@@ -111,7 +115,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <tbody id="contactsTableBody">
                     <!-- ข้อมูลจะถูกดึงมาเติมตรงนี้ด้วย JS -->
                     <tr>
-                        <td colspan="6" class="text-center py-10">
+                        <td colspan="8" class="text-center py-10">
                             <div class="flex justify-center items-center gap-3 text-gray-400">
                                 <div class="spinner-ring border-gray-300"></div>
                                 <span class="font-medium text-sm">กำลังโหลดข้อมูล...</span>
@@ -132,8 +136,6 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
         </div>
     </div>
-
-</div>
 
 <!-- ==========================================
      MODAL: Add / Edit Contact Form
