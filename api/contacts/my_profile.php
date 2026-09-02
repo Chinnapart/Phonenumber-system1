@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':employee_id' => $employeeId, 
-                ':fn' => $firstName,        // ⭐⭐⭐ เพิ่มบรรทัดนี้ที่หายไป (ชื่อ) ⭐⭐⭐
+                ':fn' => $firstName,        
                 ':ln' => $lastName, 
                 ':jt' => $jobTitle,
                 ':dept' => $departmentId, 
@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':employee_id' => $employeeId, 
-                    ':jt' => $jobTitle,         // ⭐⭐⭐ เพิ่มบรรทัดนี้ที่หายไป (ตำแหน่ง) ⭐⭐⭐
+                    ':jt' => $jobTitle,         
                     ':dept' => $departmentId, 
                     ':ext' => $extension, 
                     ':mob' => $mobileNumber, 
@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
        // ... โค้ดเดิมที่ทำการ UPDATE contacts ...
         
-        // ⭐⭐⭐ เพิ่มโค้ดส่วนนี้เข้าไป เพื่อให้อัปเดตรูปที่มุมขวาบนและระบบจดจำถาวร ⭐⭐⭐
+        
         if ($avatarUrl) {
             // 1. อัปเดต path รูปภาพลงในตาราง users ด้วย
             $stmtUser = $pdo->prepare("UPDATE users SET avatar_url = :avatar WHERE id = :user_id");
@@ -198,7 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user']['avatar_url'] = $avatarUrl;
             }
         }
-        // ⭐⭐⭐ สิ้นสุดโค้ดที่เพิ่ม ⭐⭐⭐
+        
 
         // ส่งข้อความกลับไปบอกหน้าจอว่าสำเร็จ
         echo json_encode(['status' => 'success', 'message' => 'อัปเดตข้อมูลโปรไฟล์และรูปภาพสำเร็จ!']);

@@ -77,6 +77,15 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </a>
             </li>
         
+        <li>
+                <a href="<?= BASE_URL ?>views/admin/import_excel.php" 
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= $currentPage === 'import_excel.php' ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' ?>">
+                    <i class="ph <?= $currentPage === 'import_excel.php' ? 'ph-microsoft-excel-logo text-blue-600' : 'ph-file-xls' ?> text-xl"></i>
+                    นำเข้าข้อมูล User (Import Excel)
+                </a>
+            </li>
+        
+        
         </ul>
 
 
