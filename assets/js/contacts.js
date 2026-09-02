@@ -104,12 +104,16 @@ async function loadContacts() {
 /**
  * ฟังก์ชันนำข้อมูล JSON มาสร้างเป็น HTML Table Rows
  */
+/**
+ * ฟังก์ชันนำข้อมูล JSON มาสร้างเป็น HTML Table Rows
+ */
 function renderTable(contacts) {
     const els = getElements();
     if (contacts.length === 0) {
+        // แก้ colspan เป็น 9 ให้ครอบคลุมจำนวนคอลัมน์ทั้งหมด
         els.tableBody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center py-8 text-gray-400">
+                <td colspan="9" class="text-center py-8 text-gray-400">
                     <i class="ph ph-folder-open text-4xl mb-2"></i><br>
                     ไม่พบข้อมูลผู้ติดต่อ
                 </td>
@@ -130,21 +134,17 @@ function renderTable(contacts) {
                 </span>
             `;
         } else if (contact.status === 'offline') {
-            // คำนวณจำนวนวันที่ออฟไลน์
             let offlineDaysText = '';
             if (contact.last_online && contact.last_online !== '0000-00-00 00:00:00') {
                 const lastOnlineDate = new Date(contact.last_online);
                 const today = new Date();
-                
-                // หาความต่างของเวลาเป็นมิลลิวินาที แล้วแปลงเป็นวัน
-                const diffTime = Math.abs(today - lastOnlineDate);
+             const diffTime = Math.abs(today - lastOnlineDate);
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 
                 if (diffDays > 0) {
                     offlineDaysText = `<div class="text-[0.65rem] text-rose-500 font-medium mt-1">ไม่ออนไลน์ ${diffDays} วัน</div>`;
                 } else {
-                    // กรณียังไม่ถึง 1 วัน
-                    offlineDaysText = `<div class="text-[0.65rem] text-rose-400 font-medium mt-1">ออฟไลน์วันนี้</div>`;
+                 offlineDaysText = `<div class="text-[0.65rem] text-rose-400 font-medium mt-1">ออฟไลน์วันนี้</div>`;
                 }
             } else {
                 offlineDaysText = `<div class="text-[0.65rem] text-gray-400 font-medium mt-1">ไม่เคยออนไลน์</div>`;
@@ -173,16 +173,21 @@ function renderTable(contacts) {
             ? `<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background-color: ${deptColor}"></span>${contact.department_name}</div>`
             : '<span class="text-gray-400">-</span>';
 
-        // นำตัวแปร deviceStatusHtml มาใช้งานตรง td ที่ id="status-cell-${contact.id}"
-        html += `
+     html += `
             <tr class="hover:bg-slate-50 transition-colors group">
-               
-            <!-- 🌟 เพิ่มข้อมูลรหัสพนักงานตรงนี้เป็นคอลัมน์แรก 🌟 -->
+                
+                <!-- 1. คอลัมน์ Checkbox -->
+                <td class="text-center pl-4 w-12">
+                    <input type="checkbox" value="${contact.id}" class="contact-checkbox w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 cursor-pointer transition-all" onclick="toggleRowHighlight(this)">
+                </td>
+
+                <!-- 2. คอลัมน์ EMP -->
                 <td class="text-center font-mono font-medium text-slate-600">
                     ${contact.employee_id || '-'}
                 </td>
 
-            <td class="font-medium text-gray-900">
+                <!-- 3. คอลัมน์ ชื่อ-นามสกุล -->
+                <td class="font-medium text-gray-900">
                     <div class="flex items-center gap-3">
                         ${contact.avatar_url 
                             ? `<img src="${BASE_URL}${contact.avatar_url}" alt="Profile" class="w-9 h-9 rounded-full object-cover shadow-sm border border-gray-100 flex-shrink-0">` 
@@ -197,7 +202,7 @@ function renderTable(contacts) {
                     </div>
                 </td>
 
-                <!-- สถานะ User -->
+                <!-- 4. คอลัมน์ สถานะ User -->
                 <td class="text-center">
                     ${(function() {
                         switch(contact.work_status) {
@@ -213,17 +218,23 @@ function renderTable(contacts) {
                     })()}
                 </td>
 
+                <!-- 5. คอลัมน์ แผนก -->
                 <td>${deptHtml}</td>
-                <td class="font-mono text-gray-600">${contact.extension || '-'}</td>
-                <td class="font-mono text-blue-600" id="ip-cell-${contact.id}">${contact.ip_address || '-'}</td>
                 
-                <!-- 🌟 ตรงนี้คือคอลัมน์อุปกรณ์ ที่ถูกแทนที่ด้วยตัวแปร deviceStatusHtml 🌟 -->
+                <!-- 6. คอลัมน์ เบอร์ต่อ -->
+                <td class="font-mono text-gray-600 text-center">${contact.extension || '-'}</td>
+                
+                <!-- 7. คอลัมน์ IP -->
+                <td class="font-mono text-blue-600 text-center" id="ip-cell-${contact.id}">${contact.ip_address || '-'}</td>
+                
+                <!-- 8. คอลัมน์ สถานะอุปกรณ์ -->
                 <td id="status-cell-${contact.id}" class="text-center">
                     ${deviceStatusHtml}
                 </td>
                 
-                <td>
-                    <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <!-- 9. คอลัมน์ จัดการ -->
+                <td class="text-center">
+                    <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button onclick="pingSingleIp(${contact.id}, '${contact.ip_address}')" class="p-1.5 text-blue-500 hover:bg-blue-50 rounded-lg tooltip" title="ตรวจสอบสถานะ (Ping)">
                             <i class="ph ph-broadcast text-lg"></i>
                         </button>
@@ -241,6 +252,19 @@ function renderTable(contacts) {
 
     els.tableBody.innerHTML = html;
 }
+
+// ฟังก์ชันสำหรับไฮไลท์สีแถวเวลาถูกติ๊ก (ให้แน่ใจว่ามีฟังก์ชันนี้อยู่ท้ายไฟล์ contacts.js)
+window.toggleRowHighlight = function(checkbox) {
+    const row = checkbox.closest('tr');
+    if (checkbox.checked) {
+        row.classList.add('bg-blue-50/50');
+    } else {
+        row.classList.remove('bg-blue-50/50');
+        // ถ้ายกเลิกการติ๊กบางตัว ให้เอาเครื่องหมายถูกที่ "เลือกทั้งหมด" (ในหัวตาราง) ออกด้วย
+        const selectAll = document.getElementById('selectAllCheckbox');
+        if (selectAll) selectAll.checked = false;
+    }
+};
 /**
  * ฟังก์ชันจัดการปุ่มเปลี่ยนหน้า (Pagination)
  */

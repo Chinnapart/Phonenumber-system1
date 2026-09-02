@@ -102,7 +102,11 @@ require_once __DIR__ . '/../includes/header.php';
             <table class="custom-table whitespace-nowrap w-full">
                 <thead>
                     <tr>
-                        <th class="text-center w-24">EMP</th>
+                        <th class="text-center w-12 pl-4">
+                            <input type="checkbox" id="selectAllCheckbox" class="w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 cursor-pointer transition-all">
+                        </th>
+                    
+                    <th class="text-center w-24">EMP</th>
                         <th class="text-center w-2/6">ชื่อ - นามสกุล</th>
                         <th class="text-center w-2/6">สถานะUser</th>
                         <th class="text-center w-1/6">แผนก</th>
@@ -274,6 +278,28 @@ require_once __DIR__ . '/../includes/header.php';
     <!-- ========================================== -->
     <script src="<?= BASE_URL ?>assets/js/app.js"></script>
     <script src="<?= BASE_URL ?>assets/js/contacts.js"></script>
+
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ระบบ "เลือกทั้งหมด" (Select All)
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    const checkboxes = document.querySelectorAll('.contact-checkbox');
+                    checkboxes.forEach(cb => {
+                        cb.checked = this.checked;
+                        const row = cb.closest('tr');
+                        if (this.checked) {
+                            row.classList.add('bg-blue-50/50');
+                        } else {
+                            row.classList.remove('bg-blue-50/50');
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+
 
 </body>
 </html>
