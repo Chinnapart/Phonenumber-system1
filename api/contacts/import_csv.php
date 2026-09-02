@@ -42,9 +42,18 @@ try {
 
         $pdo->beginTransaction(); // เริ่ม Transaction
 
+        // ⭐⭐⭐ 1. เพิ่มตัวแปรสำหรับเช็คแถวแรก (Header) ⭐⭐⭐
+        $isFirstRow = true; 
+
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
             // ข้ามแถวว่าง
             if (empty(array_filter($data))) continue;
+
+            // ⭐⭐⭐ 2. เช็คว่าถ้าเป็นบรรทัดแรกสุด ให้ข้ามไปเลยไม่ต้องเซฟ ⭐⭐⭐
+            if ($isFirstRow) {
+                $isFirstRow = false;
+                continue;
+            }
 
             // Map ข้อมูลตาม Template (Index 0 ถึง 4)
             // เช็คว่ามีข้อมูลครบก่อนเรียกใช้ ป้องกัน Index Undefined
@@ -54,6 +63,7 @@ try {
             $deptName = isset($data[3]) ? trim($data[3]) : '';
             $ext = isset($data[4]) ? trim($data[4]) : '';
 
+           
             // ข้ามแถวที่ชื่อหรือนามสกุลว่าง (ข้อมูลบังคับ)
             if (empty($fName) || empty($lName)) {
                 $skipCount++;
