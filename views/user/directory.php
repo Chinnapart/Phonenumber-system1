@@ -16,13 +16,23 @@ $departments = Database::getAll("SELECT id, name FROM departments ORDER BY name 
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
+
 <style>
-    /* ซ่อนคอลัมน์จัดการ สำหรับ User ทั่วไป */
+    <?php if (!Auth::isAdmin()): ?>
+    /* 1. ซ่อนคอลัมน์ "จัดการ" (คอลัมน์สุดท้าย) สำหรับ User ทั่วไป */
     .custom-table th:last-child,
     .custom-table td:last-child {
         display: none !important;
     }
+
+    /* 2. ซ่อนคอลัมน์ "IP" (คอลัมน์ที่ 6) สำหรับ User ทั่วไป */
+    .custom-table th:nth-child(6),
+    .custom-table td:nth-child(6) {
+        display: none !important;
+    }
+    <?php endif; ?>
 </style>
+
 
 <div class="max-w-7xl mx-auto space-y-6 animate-fade-in relative pb-10">
     
