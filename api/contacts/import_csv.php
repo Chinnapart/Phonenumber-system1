@@ -34,8 +34,9 @@ try {
         $stmtCheckEmp = $pdo->prepare("SELECT id FROM contacts WHERE employee_id = ?");
         $stmtGetDept = $pdo->prepare("SELECT id FROM departments WHERE name = ? LIMIT 1");
         
+        
         $sqlInsert = "INSERT INTO contacts (employee_id, first_name, last_name, department_id, extension, status, created_by) 
-                      VALUES (:emp_id, :fname, :lname, :dept_id, :ext, 'online', :created_by)";
+                      VALUES (:emp_id, :fname, :lname, :dept_id, :ext, 'unknown', :created_by)";
         $stmtInsert = $pdo->prepare($sqlInsert);
 
         $adminId = $_SESSION['user_id'];
