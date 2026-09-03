@@ -574,3 +574,56 @@ window.exportToCSV = async function(buttonElement) {
         buttonElement.disabled = false;
     }
 }
+
+/**
+ * 3. ฟังก์ชันสร้างบัญชี User อัตโนมัติ (Auto Generate)
+ */
+window.autoGenerateUsers = async function(btnElement) {
+    // หา Checkbox ทั้งหมดที่ถูกติ๊ก
+    const checkboxes = document.querySelectorAll('.contact-checkbox:checked');
+    const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+
+    // ถ้าไม่ได้ติ๊กเลย ให้แจ้งเตือน
+    if (selectedIds.length === 0) {
+        showToast('กรุณาติ๊กเลือกพนักงานอย่างน้อย 1 รายการ', 'error');
+        return;
+    }
+
+    // ถามยืนยันก่อนสร้าง
+    if (!confirm(`ต้องการสร้างบัญชีผู้ใช้งานอัตโนมัติสำหรับ ${selectedIds.length} รายการที่เลือกหรือไม่?\n\nรูปแบบบัญชีที่จะถูกสร้าง:\n- Username: รหัสพนักงาน (EMP)\n- Password: password\n- ระดับสิทธิ์: User`)) {
+        return;
+    }
+
+    // เปลี่ยนปุ่มเป็นสถานะโหลด
+    const originalHtml = btnElement.innerHTML;
+    btnElement.innerHTML = `<div class="spinner-ring border-white w-4 h-4"></div> กำลังสร้างบัญชี...`;
+    btnElement.disabled = true;
+
+    try {
+        // ยิง API ไปสร้างบัญชี
+        const response = await apiCall('api/users/auto_generate.php', 'POST', {
+            contact_ids: selectedIds
+        });
+
+        if (response.status === 'success') {
+            showToast(response.message, 'success');
+            
+            // เคลียร์การติ๊ก Checkbox ทั้งหมดทิ้ง
+            document.querySelectorAll('.contact-checkbox').forEach(cb => {
+                cb.checked = false;
+                cb.closest('tr').classList.remove('bg-blue-50/50');
+            });
+            const selectAll = document.getElementById('selectAllCheckbox');
+            if (selectAll) selectAll.checked = false;
+            
+        } else {
+            showToast(response.message, 'error');
+        }
+    } catch (error) {
+        showToast('เกิดข้อผิดพลาดในการเชื่อมต่อเพื่อสร้างบัญชี', 'error');
+    } finally {
+        // คืนค่าปุ่มกลับมาเหมือนเดิม
+        btnElement.innerHTML = originalHtml;
+        btnElement.disabled = false;
+    }
+};

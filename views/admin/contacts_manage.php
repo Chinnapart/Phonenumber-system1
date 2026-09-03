@@ -34,6 +34,13 @@ require_once __DIR__ . '/../includes/header.php';
                 <i class="ph ph-download-simple text-lg"></i>
                 Export
             </button>
+          
+            <!-- ⭐⭐⭐ ปุ่มสร้างบัญชี (Auto) ที่เพิ่มใหม่ ⭐⭐⭐ -->
+            <button onclick="autoGenerateUsers(this)" class="inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium px-4 py-2.5 rounded-xl shadow-sm transition-all duration-200">
+                <i class="ph ph-user-gear text-lg"></i>
+                บัญชีAuto 
+            </button>
+          
             <!-- ปุ่มสแกน Ping -->
             <button onclick="runBatchPing(this)" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium px-4 py-2.5 rounded-xl shadow-sm transition-all duration-200">
                 <i class="ph ph-radar text-lg text-emerald-400"></i>
