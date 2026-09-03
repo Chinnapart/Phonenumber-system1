@@ -18,19 +18,25 @@ require_once __DIR__ . '/../includes/header.php';
 
 
 <style>
+    /* 1. ซ่อนคอลัมน์ Checkbox (คอลัมน์แรก) สำหรับหน้า Directory เสมอ เพราะไม่ได้ใช้งาน */
+    .custom-table th:first-child,
+    .custom-table td:first-child {
+        display: none !important;
+    }
+
     <?php if (!Auth::isAdmin()): ?>
-    /* 1. ซ่อนคอลัมน์ "จัดการ" (คอลัมน์สุดท้าย) สำหรับ User ทั่วไป */
+    /* 2. ซ่อนคอลัมน์ "IP" (ตอนนี้ขยับไปเป็นคอลัมน์ที่ 7) สำหรับ User ทั่วไป */
+    .custom-table th:nth-child(7),
+    .custom-table td:nth-child(7) {
+        display: none !important;
+    }
+
+    /* 3. ซ่อนคอลัมน์ "จัดการ" (คอลัมน์สุดท้าย) สำหรับ User ทั่วไป */
     .custom-table th:last-child,
     .custom-table td:last-child {
         display: none !important;
     }
-
-    /* 2. ซ่อนคอลัมน์ "IP" (คอลัมน์ที่ 6) สำหรับ User ทั่วไป */
-    .custom-table th:nth-child(6),
-    .custom-table td:nth-child(6) {
-        display: none !important;
-    }
-    <?php endif; ?>
+ <?php endif; ?>
 </style>
 
 
@@ -141,9 +147,11 @@ require_once __DIR__ . '/../includes/header.php';
     <!-- Table Container -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="table-container">
-            <table class="custom-table whitespace-nowrap">
+            <table class="custom-table whitespace-nowrap w-full">
                 <thead>
                     <tr>
+                        <!-- เพิ่ม <th> ว่างๆ เพื่อรับคอลัมน์ Checkbox จาก JS -->
+                        <th class="text-center w-12 pl-4"></th> 
                         <th class="text-center w-24">EMP</th>
                         <th class="text-center w-2/6">ชื่อ - นามสกุล</th>
                         <th class="text-center w-28">สถานะ User</th>
@@ -156,7 +164,8 @@ require_once __DIR__ . '/../includes/header.php';
                 </thead>
                 <tbody id="contactsTableBody">
                     <tr>
-                        <td colspan="6" class="text-center py-10">
+                        <!-- เปลี่ยน colspan ให้ครอบคลุม 9 คอลัมน์ -->
+                        <td colspan="9" class="text-center py-10">
                             <div class="flex justify-center items-center gap-3 text-gray-400">
                                 <div class="spinner-ring border-gray-300"></div>
                                 <span class="font-medium text-sm">กำลังโหลดข้อมูล...</span>
