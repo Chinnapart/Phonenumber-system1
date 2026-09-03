@@ -255,14 +255,20 @@ function renderTable(contacts) {
 
 // ฟังก์ชันสำหรับไฮไลท์สีแถวเวลาถูกติ๊ก (ให้แน่ใจว่ามีฟังก์ชันนี้อยู่ท้ายไฟล์ contacts.js)
 window.toggleRowHighlight = function(checkbox) {
+    // ต้องให้มันหา tr ที่เป็น parent-element ของมัน 
     const row = checkbox.closest('tr');
-    if (checkbox.checked) {
-        row.classList.add('bg-blue-50/50');
-    } else {
-        row.classList.remove('bg-blue-50/50');
-        // ถ้ายกเลิกการติ๊กบางตัว ให้เอาเครื่องหมายถูกที่ "เลือกทั้งหมด" (ในหัวตาราง) ออกด้วย
-        const selectAll = document.getElementById('selectAllCheckbox');
-        if (selectAll) selectAll.checked = false;
+    
+    // ตรวจสอบก่อนว่าหาบรรทัดเจอไหม แล้วค่อยเปลี่ยนสี
+    if(row) {
+        if (checkbox.checked) {
+            row.classList.add('bg-blue-50/50');
+        } else {
+            row.classList.remove('bg-blue-50/50');
+            
+            // ถ้ายกเลิกการติ๊ก ให้เอาเครื่องหมายถูกที่ "เลือกทั้งหมด" ออกด้วย
+            const selectAll = document.getElementById('selectAllCheckbox');
+            if(selectAll) selectAll.checked = false;
+        }
     }
 };
 /**
@@ -596,31 +602,36 @@ window.autoGenerateUsers = async function(btnElement) {
 
     // เปลี่ยนปุ่มเป็นสถานะโหลด
     const originalHtml = btnElement.innerHTML;
-    btnElement.innerHTML = `<div class="spinner-ring border-white w-4 h-4"></div> กำลังสร้างบัญชี...`;
+    btnElement.innerHTML = `<div class="spinner-ring border-white w-4 h-4"></div> กำลังสร้าง...`;
     btnElement.disabled = true;
 
     try {
-        // ยิง API ไปสร้างบัญชี
-        const response = await apiCall('api/users/auto_generate.php', 'POST', {
+        // ⭐ ลองส่งไปที่ API api/contacts/auto_generate.php 
+        const response = await apiCall('api/contacts/auto_generate.php', 'POST', {
             contact_ids: selectedIds
         });
 
+        // สมมติว่าสร้างสำเร็จ
         if (response.status === 'success') {
             showToast(response.message, 'success');
             
             // เคลียร์การติ๊ก Checkbox ทั้งหมดทิ้ง
             document.querySelectorAll('.contact-checkbox').forEach(cb => {
                 cb.checked = false;
-                cb.closest('tr').classList.remove('bg-blue-50/50');
+                const row = cb.closest('tr');
+                if(row) row.classList.remove('bg-blue-50/50');
             });
             const selectAll = document.getElementById('selectAllCheckbox');
             if (selectAll) selectAll.checked = false;
             
         } else {
+            // ถ้าระบบส่ง error กลับมา แจ้งเตือนข้อความนั้นเลย
             showToast(response.message, 'error');
         }
     } catch (error) {
-        showToast('เกิดข้อผิดพลาดในการเชื่อมต่อเพื่อสร้างบัญชี', 'error');
+        console.error("Auto Generate Error:", error);
+        // แสดง Error อย่างละเอียดให้รู้ว่าเกิดอะไรขึ้น
+        showToast('เชื่อมต่อ API ไม่สำเร็จ: ' + error.message, 'error');
     } finally {
         // คืนค่าปุ่มกลับมาเหมือนเดิม
         btnElement.innerHTML = originalHtml;
